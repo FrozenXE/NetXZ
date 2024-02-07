@@ -51,23 +51,13 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
         </div>
-          <div className="flex-center gap-3">
-            <Link
-              to={`/update-post/${post.$id}`}
-              className={`${user.id !== post.creator.$id && "hidden"}`}
-              >
-              <img src={"/assets/icons/edit.svg"} alt="edit" width={20} height={20} />
-            </Link>
-            
-            {user.id === post.creator.$id && (
-              <Button
-              onClick={handleDeletePost}
-              className="post_details-delete_btn"
-              >
-                <img src={"/assets/icons/delete.svg"} alt="delete" width={24} height={24} />
-              </Button>
-            )}
-        </div>
+
+        <Link
+          to={`/update-post/${post.$id}`}
+          className={`${user.id !== post.creator.$id && "hidden"}`}
+        >
+          <img src={"/assets/icons/edit.svg"} alt="edit" width={20} height={20} />
+        </Link>
       </div>
 
       <Link to={`/posts/${post.$id}`}>
