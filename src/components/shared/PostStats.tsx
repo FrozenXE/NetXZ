@@ -1,7 +1,7 @@
 import { Models } from "appwrite";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import CommentForm from '@/components/shared/CommentForm';
+import CommentForm from '@/components/forms/CommentForm';
 import { checkIsLiked } from "@/lib/utils";
 import {
   useLikePost,

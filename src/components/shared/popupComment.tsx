@@ -2,7 +2,7 @@ import React from "react";
 import { CommentData } from "@/lib/appwrite/api";
 import { Loader } from "@/components/shared";
 import CommentRender from "./CommentRender";
-import CommentFormMobile from "./CommentFormMobile";
+import CommentFormMobile from "../forms/CommentFormMobile";
 
 
 type PopupCommentProps = {

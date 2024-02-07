@@ -301,27 +301,21 @@ export const useCurrentUser = () => {
 };
 
 export const useIsFollowingQuery = (targetUserId: string) => {
-const queryClient = useQueryClient();
-
-  return useQuery<boolean, Error>(["isFollowing", targetUserId], async () => {
-    const currentUser = await getCurrentUser();
-    if (!currentUser || !currentUser.followingId) {
-      return false;
-    }
-    return currentUser.followingId.includes(targetUserId);
-  }, {
-    staleTime: 30000, 
-    refetchOnWindowFocus: false, 
-    refetchOnMount: false, 
-    refetchInterval: false, 
-    onSuccess: (_data) => {
-      queryClient.prefetchQuery(["isFollowing", targetUserId], async () => {
-        const currentUser = await getCurrentUser();
-        if (!currentUser || !currentUser.followingId) {
-          return false;
-        }
-        return currentUser.followingId.includes(targetUserId);
-      });
+  return useQuery<boolean, Error>(
+    ["isFollowing", targetUserId],
+    async () => {
+      const currentUser = await getCurrentUser();
+      if (!currentUser || !currentUser.followingId) {
+        return false;
+      }
+      return currentUser.followingId.includes(targetUserId);
     },
-  });
+    {
+      staleTime: 30000,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchInterval: false,
+      onSuccess: () => {},
+    }
+  );
 };
