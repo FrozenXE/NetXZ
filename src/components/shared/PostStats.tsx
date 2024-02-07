@@ -18,7 +18,6 @@ import RenderOneComment from "./RenderOneComment";
 type PostStatsProps = {
   post: Models.Document;
   userId: string;
-  handleDeletePost: () => Promise<void>;
 };
 
 const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {

@@ -219,7 +219,7 @@ export async function deleteFile(fileId: string) {
 
 // ============================== DELETE POST
 export async function deletePost(postId?: string, imageId?: string) {
-  if (!postId || !imageId) return;
+  if (!postId) return;
 
   try {
     const statusCode = await databases.deleteDocument(
@@ -230,14 +230,17 @@ export async function deletePost(postId?: string, imageId?: string) {
 
     if (!statusCode) throw Error;
 
-    await deleteFile(imageId);
+    if (imageId) {
+      await deleteFile(imageId);
+    }
 
     return { status: "Ok" };
   } catch (error) {
     console.log(error);
-    throw error; 
+    throw error;
   }
 }
+
 
 
 // ============================== GET POSTS
