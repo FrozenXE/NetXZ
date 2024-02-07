@@ -35,12 +35,17 @@ const CommentRender: React.FC<CommentRenderProps> = ({
             createdAt={multiFormatDateString(comment.createdAt)}
         />
     ) : (
-      <div className="relative grid grid-cols-1 gap-4  border border-none rounded-lg bg-transparent shadow-lg w-full pt-4 pb-4">
+      <div className="relative grid grid-cols-1 gap-4 border border-none rounded-lg bg-transparent w-full pt-4 pb-4">
         <div className="relative flex gap-4">
-          <img src={comment.userImage} className="w-post_details-card flex flex-col md:flex-row items-stretch md:items-start8 h-8 lg:w-12 lg:h-12 rounded-full" />
+          <div className='w-1/6 m-auto'>
+            <img src={comment.userImage} className="w-post_details-card m-auto flex flex-col md:flex-row items-stretch md:items-start8 h-10 lg:w-12 lg:h-12 rounded-full" />
+          </div>
           <div className="flex flex-col w-full">
             <div className="flex flex-row justify-between">
-              <p className="relative text-xl text-white whitespace-nowrap truncate overflow-hidden">{comment.userName}</p>
+              <div className='flex-center gap-2'>
+                <p className="relative text-xl text-white whitespace-nowrap truncate overflow-hidden">{comment.userName}</p>
+                <p className="text-white text-sm">{multiFormatDateString(comment.createdAt)} </p>
+              </div>
               {user?.id === comment.userId && (
                 <div className="flex flex-row">
                   <Button
@@ -60,10 +65,11 @@ const CommentRender: React.FC<CommentRenderProps> = ({
                 </div>
               )}
             </div>
-            <p className="text-white text-sm">{multiFormatDateString(comment.createdAt)} </p>
+            <div>
+              <p className=" text-white text-l">{comment.commentText}</p>
+            </div>
           </div>
         </div>
-        <p className="-mt-4 text-white text-l pt-3 pl-1">{comment.commentText}</p>
       </div>
     )}
   </li>
