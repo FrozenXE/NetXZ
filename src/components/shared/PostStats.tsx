@@ -12,6 +12,7 @@ import {
 import { CommentData, createComment, deleteComment, editComment, getCommentsData } from "@/lib/appwrite/api";
 import PopupComment from "./popupComment";
 import { useUserContext } from "@/context/AuthContext";
+import RenderOneComment from "./RenderOneComment";
 
 
 type PostStatsProps = {
@@ -29,6 +30,7 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
 
   const location = useLocation();
   const likesList = post.likes.map((user: Models.Document) => user.$id);
+  const [latestComment, setLatestComment] = useState<CommentData | null>(null);
 
   const [likes, setLikes] = useState<string[]>(likesList);
   const [isSaved, setIsSaved] = useState(false);
@@ -46,6 +48,29 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
   useEffect(() => {
     refetchCurrentUser();
   }, [userId, refetchCurrentUser]);
+  
+  useEffect(() => {
+    const fetchLatestComment = async () => {
+      try {
+        const comments = await getCommentsData();
+        if (comments.length > 0) {
+          // Filter comments for this post
+          const postComments = comments.filter(comment => comment.postId === post.$id);
+          if (postComments.length > 0) {
+            // Sort comments by createdAt in descending order to get the latest comment
+            postComments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            const latest = postComments[0]; // Get the latest comment
+            setLatestComment(latest);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching latest comment:", error);
+      }
+    };
+
+    fetchLatestComment();
+  }, [post.$id]); // Make sure to include post.$id as a dependency
+
 
   useEffect(() => {
     const savedPostRecord = currentUser?.save.find(
@@ -213,8 +238,10 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
         </div>
       </div>
       <div>
+        {latestComment && <RenderOneComment latestComment={latestComment} />}
       <div>
-        {showCommentForm && <CommentForm onSubmit={handleCommentFormSubmit} />}
+        {showCommentForm && <CommentForm onSubmit={handleCommentFormSubmit} 
+        />}
         {showPopupComment && (
         <PopupComment
           onClose={() => setShowPopupComment(false)}
@@ -230,7 +257,6 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
           handleCommentFormSubmit={handleCommentFormSubmit}
         />
       )}
-
       </div>
     </div>
     </>

@@ -119,14 +119,21 @@ export async function signOutAccount() {
 // ============================== CREATE POST
 export async function createPost(post: INewPost) {
   try {
-    const uploadedFile = await uploadFile(post.file[0]);
+    let fileUrl = null;
+    let imageId = null;
 
-    if (!uploadedFile) throw Error;
+    if (post.file && post.file.length > 0) {
+      const uploadedFile = await uploadFile(post.file[0]);
 
-    const fileUrl = getFilePreview(uploadedFile.$id);
-    if (!fileUrl) {
-      await deleteFile(uploadedFile.$id);
-      throw Error;
+      if (!uploadedFile) throw new Error("Failed to upload file");
+
+      imageId = uploadedFile.$id;
+
+      fileUrl = getFilePreview(imageId);
+      if (!fileUrl) {
+        await deleteFile(imageId);
+        throw new Error("Failed to get file URL");
+      }
     }
 
     const tags = post.tags?.replace(/ /g, "").split(",") || [];
@@ -139,15 +146,15 @@ export async function createPost(post: INewPost) {
         creator: post.userId,
         caption: post.caption,
         imageUrl: fileUrl,
-        imageId: uploadedFile.$id,
+        imageId: imageId,
         location: post.location,
         tags: tags,
       }
     );
 
     if (!newPost) {
-      await deleteFile(uploadedFile.$id);
-      throw Error;
+      if (imageId) await deleteFile(imageId);
+      throw new Error("Failed to create post");
     }
 
     return newPost;
@@ -156,9 +163,15 @@ export async function createPost(post: INewPost) {
   }
 }
 
+
+
 // ============================== UPLOAD FILE
-export async function uploadFile(file: File) {
+export async function uploadFile(file?: File) {
   try {
+    if (!file) {
+      return null;
+    }
+    
     const uploadedFile = await storage.createFile(
       appwriteConfig.storageId,
       ID.unique(),
@@ -168,8 +181,10 @@ export async function uploadFile(file: File) {
     return uploadedFile;
   } catch (error) {
     console.log(error);
+    return null;
   }
 }
+
 
 // ============================== GET FILE URL
 export function getFilePreview(fileId: string) {
