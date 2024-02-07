@@ -13,6 +13,7 @@ import { CommentData, createComment, deleteComment, editComment, getCommentsData
 import PopupComment from "./popupComment";
 import { useUserContext } from "@/context/AuthContext";
 import RenderOneComment from "./RenderOneComment";
+import { toast } from "../ui/use-toast";
 
 
 type PostStatsProps = {
@@ -54,12 +55,10 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
       try {
         const comments = await getCommentsData();
         if (comments.length > 0) {
-          // Filter comments for this post
           const postComments = comments.filter(comment => comment.postId === post.$id);
           if (postComments.length > 0) {
-            // Sort comments by createdAt in descending order to get the latest comment
             postComments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-            const latest = postComments[0]; // Get the latest comment
+            const latest = postComments[0];
             setLatestComment(latest);
           }
         }
@@ -69,7 +68,7 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
     };
 
     fetchLatestComment();
-  }, [post.$id]); // Make sure to include post.$id as a dependency
+  }, [post.$id]); 
 
 
   useEffect(() => {
@@ -130,8 +129,13 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
       await deleteComment(commentId);
       const updatedCommentsData = commentsData.filter((comment) => comment.commentId !== commentId);
       setCommentsData(updatedCommentsData);
+      toast({
+        title: `Comment succesfully deleted.`,
+      });
     } catch (error) {
-      console.error("Error deleting comment:", error);
+      toast({
+        title: `Comment failed to delete, please try again`,
+      });
     }
   };
 

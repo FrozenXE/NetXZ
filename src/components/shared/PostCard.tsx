@@ -7,6 +7,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { Button } from "../ui/button";
 import { useDeletePost } from "@/lib/react-query/queries";
 import ConfirmationDelete from "../forms/ConfirmationDelete";
+import { useToast } from "../ui/use-toast";
 
 type PostCardProps = {
   post: Models.Document;
@@ -14,6 +15,7 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
+  const { toast } = useToast();
   const [isDeleted, setIsDeleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { mutate: deletePost } = useDeletePost();
@@ -25,8 +27,13 @@ const PostCard = ({ post }: PostCardProps) => {
       await deletePost({ postId: post.$id, imageId: post?.imageId });
       setIsDeleted(true);
       setShowConfirmation(false);
+      toast({
+        title: `Post succesfully deleted.`,
+      });
     } catch (error) {
-      console.error("Error deleting post:", error);
+      toast({
+        title: `Post failed to delete, Please try again.`,
+      });
     }
   };
 
