@@ -1,11 +1,12 @@
 import { Models } from "appwrite";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, } from "react-router-dom";
 
 import { PostStats } from "@/components/shared";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
 import { Button } from "../ui/button";
+import { useDeletePost } from "@/lib/react-query/queries";
 
 type PostCardProps = {
   post: Models.Document;
@@ -14,11 +15,13 @@ type PostCardProps = {
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
   const [isDeleted, setIsDeleted] = useState(false);
+  const { mutate: deletePost } = useDeletePost(); 
 
   if (!post.creator || isDeleted) return null;
 
   const handleDeletePost = async () => {
     try {
+      await deletePost({ postId: post.$id, imageId: post?.imageId });
       setIsDeleted(true);
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -97,3 +100,4 @@ const PostCard = ({ post }: PostCardProps) => {
 };
 
 export default PostCard;
+

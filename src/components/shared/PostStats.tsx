@@ -259,6 +259,7 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
       )}
       </div>
     </div>
+    
     </>
   );
 };
