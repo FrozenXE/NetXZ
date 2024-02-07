@@ -1,11 +1,9 @@
 import { Models } from "appwrite";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { PostStats } from "@/components/shared";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
-import { Button } from "../ui/button";
 
 type PostCardProps = {
   post: Models.Document;
@@ -13,17 +11,8 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
-  const [isDeleted, setIsDeleted] = useState(false);
 
-  if (!post.creator || isDeleted) return null;
-
-  const handleDeletePost = async () => {
-    try {
-      setIsDeleted(true);
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
-  };
+  if (!post.creator) return null;
 
   return (
     <div className="post-card">
@@ -81,7 +70,7 @@ const PostCard = ({ post }: PostCardProps) => {
         )}
       </Link>
 
-      <PostStats post={post} userId={user.id} handleDeletePost={handleDeletePost} />
+      <PostStats post={post} userId={user.id} />
     </div>
   );
 };
