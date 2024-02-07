@@ -110,23 +110,25 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
     }
   };
 
-  const handleLikePost = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>
-  ) => {
+  const handleLikePost = async (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
     e.stopPropagation();
-
-    let likesArray = [...likes];
-
-    if (likesArray.includes(userId)) {
-      likesArray = likesArray.filter((Id) => Id !== userId);
-    } else {
-      likesArray.push(userId);
+    try {
+      let likesArray = [...likes];
+  
+      if (likesArray.includes(userId)) {
+        likesArray = likesArray.filter((id) => id !== userId);
+      } else {
+        likesArray.push(userId);
+      }
+  
+      setLikes(likesArray); 
+  
+      await likePost({ postId: post.$id, likesArray });
+    } catch (error) {
+      console.error("Error liking or unliking post:", error);
     }
-
-    setLikes(likesArray);
-    likePost({ postId: post.$id, likesArray });
   };
-
+  
   const handleSavePost = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {

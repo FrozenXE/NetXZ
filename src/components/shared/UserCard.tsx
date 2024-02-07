@@ -1,7 +1,7 @@
 import { Button } from "../ui/button";
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
-import { useFollowUser, useIsFollowingQuery, useUnfollowUser, useCurrentUser } from "@/lib/react-query/queries"; // Assuming you have a hook to get the current user
+import { useFollowUser, useIsFollowingQuery, useUnfollowUser, useCurrentUser } from "@/lib/react-query/queries";
 
 type UserCardProps = {
   user: Models.Document;
@@ -28,9 +28,11 @@ const UserCard = ({ user }: UserCardProps) => {
       console.error("Error unfollowing user:", error);
     }
   };
+
   if (currentUser?.$id === user.$id) {
     return null;
   }
+
   return (
     <div className="user-card flex">
       <Link to={`/profile/${user.$id}`} className="flex flex-col items-center">
