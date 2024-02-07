@@ -1,12 +1,12 @@
 import { Models } from "appwrite";
 import { useState } from "react";
-import { Link, } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import { PostStats } from "@/components/shared";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
 import { Button } from "../ui/button";
 import { useDeletePost } from "@/lib/react-query/queries";
+import ConfirmationDelete from "../forms/ConfirmationDelete";
 
 type PostCardProps = {
   post: Models.Document;
@@ -15,7 +15,8 @@ type PostCardProps = {
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
   const [isDeleted, setIsDeleted] = useState(false);
-  const { mutate: deletePost } = useDeletePost(); 
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const { mutate: deletePost } = useDeletePost();
 
   if (!post.creator || isDeleted) return null;
 
@@ -23,6 +24,7 @@ const PostCard = ({ post }: PostCardProps) => {
     try {
       await deletePost({ postId: post.$id, imageId: post?.imageId });
       setIsDeleted(true);
+      setShowConfirmation(false);
     } catch (error) {
       console.error("Error deleting post:", error);
     }
@@ -30,6 +32,9 @@ const PostCard = ({ post }: PostCardProps) => {
 
   return (
     <div className="post-card">
+      {showConfirmation && (
+        <ConfirmationDelete onCancel={() => setShowConfirmation(false)} onDelete={handleDeletePost} />
+      )}
       <div className="flex-between">
         <div className="flex items-center gap-3">
           <Link to={`/profile/${post.creator.$id}`}>
@@ -54,22 +59,23 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
         </div>
-          <div className="flex-center gap-3">
-            <Link
-              to={`/update-post/${post.$id}`}
-              className={`${user.id !== post.creator.$id && "hidden"}`}
-              >
-              <img src={"/assets/icons/edit.svg"} alt="edit" width={20} height={20} />
-            </Link>
-            
-            {user.id === post.creator.$id && (
-              <Button
-              onClick={handleDeletePost}
+        <div className="flex-center gap-3">
+          <Link
+            to={`/update-post/${post.$id}`}
+            className={`${user.id !== post.creator.$id && "hidden"}`}
+          >
+            <img src={"/assets/icons/edit.svg"} alt="edit" width={20} height={20} />
+          </Link>
+
+          {user.id === post.creator.$id && (
+            <Button
+              onClick={() => setShowConfirmation(true)}
+              variant={'destructive'}
               className="post_details-delete_btn"
-              >
-                <img src={"/assets/icons/delete.svg"} alt="delete" width={24} height={24} />
-              </Button>
-            )}
+            >
+              <img src={"/assets/icons/delete.svg"} alt="delete" width={24} height={24} />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -100,4 +106,3 @@ const PostCard = ({ post }: PostCardProps) => {
 };
 
 export default PostCard;
-

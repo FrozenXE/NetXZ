@@ -139,7 +139,7 @@ const PostDetails = () => {
                 {user.id === post?.creator.$id && (
                   <Button
                     onClick={handleDeletePost}
-                    variant="ghost"
+                    variant="destructive"
                     className="post_details-delete_btn"
                   >
                     <img src={"/assets/icons/delete.svg"} alt="delete" width={24} height={24} />
