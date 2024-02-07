@@ -1,9 +1,11 @@
 import { Models } from "appwrite";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { PostStats } from "@/components/shared";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
+import { Button } from "../ui/button";
 
 type PostCardProps = {
   post: Models.Document;
@@ -11,8 +13,17 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
+  const [isDeleted, setIsDeleted] = useState(false);
 
-  if (!post.creator) return null;
+  if (!post.creator || isDeleted) return null;
+
+  const handleDeletePost = async () => {
+    try {
+      setIsDeleted(true);
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
 
   return (
     <div className="post-card">
@@ -40,13 +51,23 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
         </div>
-
-        <Link
-          to={`/update-post/${post.$id}`}
-          className={`${user.id !== post.creator.$id && "hidden"}`}
-        >
-          <img src={"/assets/icons/edit.svg"} alt="edit" width={20} height={20} />
-        </Link>
+          <div className="flex-center gap-3">
+            <Link
+              to={`/update-post/${post.$id}`}
+              className={`${user.id !== post.creator.$id && "hidden"}`}
+              >
+              <img src={"/assets/icons/edit.svg"} alt="edit" width={20} height={20} />
+            </Link>
+            
+            {user.id === post.creator.$id && (
+              <Button
+              onClick={handleDeletePost}
+              className="post_details-delete_btn"
+              >
+                <img src={"/assets/icons/delete.svg"} alt="delete" width={24} height={24} />
+              </Button>
+            )}
+        </div>
       </div>
 
       <Link to={`/posts/${post.$id}`}>
@@ -70,7 +91,7 @@ const PostCard = ({ post }: PostCardProps) => {
         )}
       </Link>
 
-      <PostStats post={post} userId={user.id} />
+      <PostStats post={post} userId={user.id} handleDeletePost={handleDeletePost} />
     </div>
   );
 };
