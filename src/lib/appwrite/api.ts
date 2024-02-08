@@ -2,7 +2,8 @@ import { ID, Query } from "appwrite";
 import { appwriteConfig, account, databases, storage, avatars, } from "./config";
 import { IUpdatePost, INewPost, INewUser, IUpdateUser } from "@/types";
 import { ReactNode } from "react";
-
+const userCache = new Map();
+const commentDataCache = new Map();
 // ============================================================
 // AUTH
 // ============================================================
@@ -484,15 +485,24 @@ export async function getUsers(limit?: number) {
 // ============================== GET USER BY ID
 export async function getUserById(userId: string) {
   try {
+    // Check if user data exists in the cache
+    if (userCache.has(userId)) {
+      return userCache.get(userId);
+    }
 
+    // If user data is not in the cache, fetch it from the server
     const user = await databases.getDocument(
       appwriteConfig.databaseId,
       appwriteConfig.userCollectionId,
       userId
     );
 
-    if (!user) throw new Error('User not found');
+    if (!user) {
+      throw new Error('User not found');
+    }
 
+    // Store user data in the cache
+    userCache.set(userId, user);
 
     return user;
   } catch (error) {
@@ -709,7 +719,7 @@ export async function getFollowersCount(userId: string): Promise<number> {
   }
 }
 
-// ============================== GET FOLLOWINGS COUNT
+// ============================== GET FOLLOWERS COUNT
 export async function getFollowingsCount(userId: string): Promise<number> {
   try {
     const user = await getUserById(userId);
@@ -779,6 +789,11 @@ export interface CommentData {
 
 export async function getCommentsData(): Promise<CommentData[]> {
   try {
+    // Check if comment data exists in the cache
+    if (commentDataCache.size > 0) {
+      return Array.from(commentDataCache.values());
+    }
+
     const { commentsCollectionId } = appwriteConfig;
 
     const response = await databases.listDocuments(
@@ -804,7 +819,7 @@ export async function getCommentsData(): Promise<CommentData[]> {
           const userName = userDetails?.name || 'Unknown';
           const userImage = userDetails?.imageUrl || '/assets/icons/profile-placeholder.svg';
 
-          commentsData.push({
+          const commentData: CommentData = {
             commentId: $id,
             userId,
             userName,
@@ -812,17 +827,25 @@ export async function getCommentsData(): Promise<CommentData[]> {
             postId,
             commentText,
             createdAt,
-          });
+          };
+
+          commentsData.push(commentData);
+
+          // Store comment data in the cache
+          commentDataCache.set($id, commentData);
         } 
       } catch (error) {
+        console.error("Error fetching comment:", error);
       }
     }
 
     return commentsData;
   } catch (error) {
+    console.error("Error fetching comments data:", error);
     throw error;
   }
 }
+
 
 
 // ============================= DELETE COMMENT
@@ -841,6 +864,9 @@ export async function deleteComment(commentId: string): Promise<void> {
 // ============================= EDIT COMMENT
 export async function editComment(commentId: string, data: { commentText: string }): Promise<CommentData> {
   try {
+    // Remove old comment data from cache
+    commentDataCache.delete(commentId);
+
     const { commentsCollectionId } = appwriteConfig;
 
     const commentsData = await getCommentsData();
@@ -853,6 +879,9 @@ export async function editComment(commentId: string, data: { commentText: string
 
     commentsData[commentIndex].commentText = data.commentText;
 
+    // Update comment data in cache
+    commentDataCache.set(commentId, commentsData[commentIndex]);
+
     await databases.updateDocument(
       appwriteConfig.databaseId,
       commentsCollectionId,
@@ -862,6 +891,7 @@ export async function editComment(commentId: string, data: { commentText: string
 
     return commentsData[commentIndex];
   } catch (error) {
+    console.error("Error editing comment:", error);
     throw error;
   }
 }
