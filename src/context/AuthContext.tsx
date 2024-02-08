@@ -9,7 +9,7 @@ export const INITIAL_USER = {
   name: "",
   username: "",
   email: "",
-  imageUrl: "",
+  imageUrl: "", // You can remove the default value here since it's optional
   bio: "",
 };
 
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           name: currentAccount.name,
           username: currentAccount.username,
           email: currentAccount.email,
-          imageUrl: currentAccount.imageUrl,
+          imageUrl: currentAccount.imageUrl, // This property can be assigned directly
           bio: currentAccount.bio,
         });
         setIsAuthenticated(true);
