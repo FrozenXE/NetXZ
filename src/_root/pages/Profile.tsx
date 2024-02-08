@@ -12,7 +12,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { useFollowUser, useGetUserById, useUnfollowUser, useIsFollowingQuery } from "@/lib/react-query/queries";
 import { useEffect, useState } from "react";
 import { GridPostList, Loader } from "@/components/shared";
-import { getFollowersCount, getFollowingsCount } from "@/lib/appwrite/api";
+import { getFollowersCount, isFollowingA } from "@/lib/appwrite/api";
 
 interface StabBlockProps {
   value: string | number;
@@ -32,17 +32,18 @@ const Profile = () => {
   const { pathname } = useLocation();
   const { data: currentUser } = useGetUserById(id || "");
   const [followersCount, setFollowersCount] = useState<number>(0);
-  const [followingsCount, setFollowingsCount] = useState<number>(0);
+  const [followingsCount] = useState<number>(0);
   const isFollowingQuery = useIsFollowingQuery(id || "");
-  const isFollowing = isFollowingQuery.data ?? false; 
+  const [isFollowing, setIsFollowing] = useState(isFollowingQuery.data ?? false);
+
   useEffect(() => {
     const fetchCounts = async () => {
       try {
         if (currentUser?.$id) {
           const followers = await getFollowersCount(currentUser.$id);
-          const followings = await getFollowingsCount(currentUser.$id);
+          const isFollowing = await isFollowingA(currentUser.$id);
           setFollowersCount(followers);
-          setFollowingsCount(followings);
+          setIsFollowing(isFollowing);
         }
       } catch (error) {
         console.error('Error fetching follower and following counts:', error);
@@ -59,15 +60,15 @@ const Profile = () => {
   const handleFollow = async () => {
     try {
       if (id) {
-        setFollowersCount((prevCount) => prevCount + 1); 
-        await followUserMutation.mutateAsync(id); 
+        setFollowersCount((prevCount) => prevCount + 1);
+        await followUserMutation.mutateAsync(id);
+        setIsFollowing(true);
         isFollowingQuery.refetch();
       }
     } catch (error) {
       console.error("Error following user:", error);
-      setFollowersCount((prevCount) => prevCount - 1); 
+      setFollowersCount((prevCount) => prevCount - 1);
     }
-    
   };
   
   const handleUnfollow = async () => {
@@ -75,13 +76,15 @@ const Profile = () => {
       if (id) {
         setFollowersCount((prevCount) => prevCount - 1);
         await unfollowUserMutation.mutateAsync(id);
+        setIsFollowing(false);
         isFollowingQuery.refetch();
       }
     } catch (error) {
       console.error("Error unfollowing user:", error);
-      setFollowersCount((prevCount) => prevCount + 1);
+        setFollowersCount((prevCount) => prevCount + 1);
     }
   };
+  
 
 
   if (!currentUser) {

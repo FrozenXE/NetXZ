@@ -9,14 +9,14 @@ type UserCardProps = {
 
 const UserCard = ({ user }: UserCardProps) => {
   const { data: currentUser } = useCurrentUser();
-  const { data: isFollowingUser, refetch } = useIsFollowingQuery(user.$id); // Destructure refetch function
+  const { data: isFollowingUser, refetch } = useIsFollowingQuery(user.$id); 
   const followUserMutation = useFollowUser();
   const unfollowUserMutation = useUnfollowUser();
 
   const handleFollow = async () => {
     try {
       await followUserMutation.mutateAsync(user.$id);
-      refetch(); // Manually trigger refetch after successful follow
+      refetch();
     } catch (error) {
       console.error("Error following user:", error);
     }
@@ -25,7 +25,7 @@ const UserCard = ({ user }: UserCardProps) => {
   const handleUnfollow = async () => {
     try {
       await unfollowUserMutation.mutateAsync(user.$id);
-      refetch(); // Manually trigger refetch after successful unfollow
+      refetch();
     } catch (error) {
       console.error("Error unfollowing user:", error);
     }

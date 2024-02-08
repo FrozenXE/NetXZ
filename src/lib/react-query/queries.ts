@@ -29,7 +29,6 @@ import {
   followUser,
 } from "@/lib/appwrite/api";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
-import { useMemo } from "react";
 
 // ============================================================
 // AUTH QUERIES
@@ -302,12 +301,10 @@ export const useCurrentUser = () => {
 };
 
 export const useIsFollowingQuery = (targetUserId: string) => {
-  const currentUserPromise = useMemo(() => getCurrentUser(), []); 
-
   return useQuery<boolean, Error>(
     ["isFollowing", targetUserId],
     async () => {
-      const currentUser = await currentUserPromise; 
+      const currentUser = await getCurrentUser();
       if (!currentUser || !currentUser.followingId) {
         return false;
       }
