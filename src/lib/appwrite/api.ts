@@ -690,22 +690,23 @@ export async function unfollowUser(userIdToUnfollow: string) {
 }
 
 
-// ============================== IS FOLLOWING
+// ============================== GET FOLLOWINGS
 export async function isFollowingA(targetUserId: string): Promise<boolean> {
   try {
+    
     const currentUser = await getCurrentUser();
 
     if (!currentUser || !currentUser.followingId) {
       return false; 
     }
 
-    return currentUser.followingId.includes(targetUserId);
+    const isFollowing = currentUser.followingId.includes(targetUserId);
+    return isFollowing;
   } catch (error) {
     console.error('Error checking isFollowing status:', error);
     throw error;
   }
 }
-
 // ============================== GET FOLLOWERS COUNT
 export async function getFollowersCount(userId: string): Promise<number> {
   try {

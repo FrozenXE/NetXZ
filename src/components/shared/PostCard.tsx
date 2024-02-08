@@ -38,7 +38,7 @@ const PostCard = ({ post }: PostCardProps) => {
   };
 
   return (
-    <div className="post-card">
+    <div className="post-card !px-5">
       {showConfirmation && (
         <ConfirmationDelete onCancel={() => setShowConfirmation(false)} onDelete={handleDeletePost} />
       )}
@@ -102,7 +102,7 @@ const PostCard = ({ post }: PostCardProps) => {
           <img
             src={post.imageUrl}
             alt="post image"
-            className="post-card_img"
+            className="post-card_img !rounded-none"
           />
         )}
       </Link>

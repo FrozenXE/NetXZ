@@ -243,9 +243,9 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
       </div>
       <div>
         {latestComment && <RenderOneComment latestComment={latestComment} />}
-      <div>
         {showCommentForm && <CommentForm onSubmit={handleCommentFormSubmit} 
         />}
+      <div>
         {showPopupComment && (
         <PopupComment
           onClose={() => setShowPopupComment(false)}

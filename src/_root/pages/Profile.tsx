@@ -12,7 +12,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { useFollowUser, useGetUserById, useUnfollowUser, useIsFollowingQuery } from "@/lib/react-query/queries";
 import { useEffect, useState } from "react";
 import { GridPostList, Loader } from "@/components/shared";
-import { getFollowersCount, isFollowingA } from "@/lib/appwrite/api";
+import { getFollowersCount, getFollowingsCount, isFollowingA } from "@/lib/appwrite/api";
 
 interface StabBlockProps {
   value: string | number;
@@ -32,7 +32,7 @@ const Profile = () => {
   const { pathname } = useLocation();
   const { data: currentUser } = useGetUserById(id || "");
   const [followersCount, setFollowersCount] = useState<number>(0);
-  const [followingsCount] = useState<number>(0);
+  const [followingsCount, setFollowingsCount] = useState<number>(0);
   const isFollowingQuery = useIsFollowingQuery(id || "");
   const [isFollowing, setIsFollowing] = useState(isFollowingQuery.data ?? false);
 
@@ -41,8 +41,10 @@ const Profile = () => {
       try {
         if (currentUser?.$id) {
           const followers = await getFollowersCount(currentUser.$id);
+          const followings = await getFollowingsCount(currentUser.$id);
           const isFollowing = await isFollowingA(currentUser.$id);
           setFollowersCount(followers);
+          setFollowingsCount(followings);
           setIsFollowing(isFollowing);
         }
       } catch (error) {
@@ -52,8 +54,7 @@ const Profile = () => {
   
     fetchCounts();
   }, [currentUser]);
-
-
+  
   const followUserMutation = useFollowUser();
   const unfollowUserMutation = useUnfollowUser();
 
