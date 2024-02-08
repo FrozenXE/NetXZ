@@ -59,24 +59,30 @@ const Profile = () => {
   const handleFollow = async () => {
     try {
       if (id) {
-        await followUserMutation.mutateAsync(id); 
         setFollowersCount((prevCount) => prevCount + 1); 
+        await followUserMutation.mutateAsync(id); 
+        isFollowingQuery.refetch();
       }
     } catch (error) {
       console.error("Error following user:", error);
+      setFollowersCount((prevCount) => prevCount - 1); 
     }
+    
   };
-
+  
   const handleUnfollow = async () => {
     try {
       if (id) {
-        await unfollowUserMutation.mutateAsync(id);
         setFollowersCount((prevCount) => prevCount - 1);
+        await unfollowUserMutation.mutateAsync(id);
+        isFollowingQuery.refetch();
       }
     } catch (error) {
       console.error("Error unfollowing user:", error);
+      setFollowersCount((prevCount) => prevCount + 1);
     }
   };
+
 
   if (!currentUser) {
     return (
