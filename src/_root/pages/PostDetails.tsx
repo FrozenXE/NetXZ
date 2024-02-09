@@ -102,7 +102,7 @@ const PostDetails = () => {
         <div className="post_details-card flex flex-col md:flex-row items-stretch md:items-start justify-normal h-full">
           {post.imageUrl && (
             <div className="md:w-full xl:w-1/2 md:h-full">
-              <img src={post.imageUrl} alt="creator" className="post_details-img md:w-full w-full object-cover h-full" />
+              <img src={post.imageUrl} alt="creator" className="post_details-img md:w-full w-full object-cover h-full " />
             </div>
           )}
           <div className="post_details-info xl:w-1/2 md:full flex flex-col p-4 md:pl-6 overflow-auto h-full">
