@@ -9,7 +9,7 @@ export const INITIAL_USER = {
   name: "",
   username: "",
   email: "",
-  imageUrl: "", // You can remove the default value here since it's optional
+  imageUrl: "", 
   bio: "",
 };
 
@@ -49,15 +49,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           name: currentAccount.name,
           username: currentAccount.username,
           email: currentAccount.email,
-          imageUrl: currentAccount.imageUrl, // This property can be assigned directly
+          imageUrl: currentAccount.imageUrl,
           bio: currentAccount.bio,
         });
         setIsAuthenticated(true);
-
+  
         return true;
+      } else {
+        setIsAuthenticated(false);
+        setUser(INITIAL_USER);
+        localStorage.removeItem("cookieFallback");
+        navigate("/sign-in"); 
+        return false;
       }
-
-      return false;
     } catch (error) {
       console.error(error);
       return false;
@@ -65,6 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     const cookieFallback = localStorage.getItem("cookieFallback");
