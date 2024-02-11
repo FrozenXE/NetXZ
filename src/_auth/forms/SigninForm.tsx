@@ -1,7 +1,8 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
+import ResetPassword from "./ResetPassword"; // Import your ResetPassword component
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ const SigninForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const location = useLocation(); // Get the current location
 
   const { mutateAsync: signInAccount, isLoading } = useSignInAccount();
 
@@ -49,6 +51,11 @@ const SigninForm = () => {
       return;
     }
   };
+
+  // Check if the current route is /reset-password
+  if (location.pathname === "/reset-password") {
+    return <ResetPassword />;
+  }
 
   return (
     <Form {...form}>
@@ -121,6 +128,10 @@ const SigninForm = () => {
               Sign up
             </Link>
           </p>
+          <p className="text-small-regular text-light-2 text-center mt-2">
+            <Link to="/reset-password" className="text-primary-500 text-small-semibold ml-1">Reset Password</Link>
+          </p>
+
         </form>
       </div>
     </Form>
