@@ -8,30 +8,6 @@ const commentDataCache = new Map();
 // AUTH
 // ============================================================
 
-export async function initiatePasswordRecovery(email: string) {
-  try {
-      // Call the createRecovery endpoint with the user's email and redirect URL
-      const response = await account.createRecovery(email, 'netxz.cfd/reset-password');
-
-      return response; // Return success response
-  } catch (error) {
-      console.log(error);
-      throw error; // Throw error if any
-  }
-}
-
-// Function to complete password recovery
-export async function completePasswordRecovery(userId: string, secret: string, newPassword: string) {
-  try {
-      // Call the updateRecovery endpoint with the user's ID, secret, and new password
-      const response = await account.updateRecovery(userId, secret, newPassword, newPassword);
-
-      return response; // Return success response
-  } catch (error) {
-      console.log(error);
-      throw error; // Throw error if any
-  }
-}
 // ============================== SIGN UP
 export async function createUserAccount(user: INewUser) {
   try {
