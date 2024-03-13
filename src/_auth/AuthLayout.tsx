@@ -9,7 +9,7 @@ export default function AuthLayout() {
     <>
       <>
       <img 
-          className="w-1/12 fixed start-0 flex m-auto bg-black md:w-1/6 sm:w-1/16"
+          className="w-1/12 fixed start-0 flex m-autosm:w-1/16"
             src="/assets/icons/beta.png" 
             alt="logo-text"
             width={150}
