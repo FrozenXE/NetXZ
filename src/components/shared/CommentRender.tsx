@@ -24,7 +24,7 @@ const CommentRender: React.FC<CommentRenderProps> = ({
   handleDeleteComment
 }) => {
     return(
-    <li key={comment.commentId} className="flex justify-center relative top-1/3 w-full">
+    <li key={comment.commentId} className="flex justify-center relative top-1/3 w-full border-white">
         {editingCommentId === comment.commentId ? (
         <EditComment
             initialCommentText={comment.commentText}

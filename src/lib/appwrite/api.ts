@@ -862,37 +862,35 @@ export async function deleteComment(commentId: string): Promise<void> {
 }
 
 // ============================= EDIT COMMENT
+// api.ts
+
 export async function editComment(commentId: string, data: { commentText: string }): Promise<CommentData> {
   try {
-    // Remove old comment data from cache
-    commentDataCache.delete(commentId);
+    // Fetch comments data
+    let commentsData = await getCommentsData();
 
-    const { commentsCollectionId } = appwriteConfig;
+    // Find the comment with the specified ID
+    const commentToUpdate = commentsData.find(comment => comment.commentId === commentId);
 
-    const commentsData = await getCommentsData();
-
-    const commentIndex = commentsData.findIndex(comment => comment.commentId === commentId);
-
-    if (commentIndex === -1) {
+    if (!commentToUpdate) {
       throw new Error("Comment not found");
     }
 
-    commentsData[commentIndex].commentText = data.commentText;
+    // Update the comment text
+    commentToUpdate.commentText = data.commentText;
 
-    // Update comment data in cache
-    commentDataCache.set(commentId, commentsData[commentIndex]);
-
+    // Update the comment text in the database
     await databases.updateDocument(
       appwriteConfig.databaseId,
-      commentsCollectionId,
+      appwriteConfig.commentsCollectionId,
       commentId,
       { commentText: data.commentText } 
     );
 
-    return commentsData[commentIndex];
+    // Return the updated comment
+    return commentToUpdate;
   } catch (error) {
     console.error("Error editing comment:", error);
     throw error;
   }
 }
-

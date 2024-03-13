@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui";
 import { Loader } from "@/components/shared";
-import { GridPostList, PostStats } from "@/components/shared";
+import { GridPostList } from "@/components/shared";
 import { useGetPostById, useGetUserPosts, useDeletePost as useDeletePostMutation } from "@/lib/react-query/queries";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
 import { getCommentsData, CommentData, deleteComment, editComment } from "@/lib/appwrite/api";
 import CommentRender from "@/components/shared/CommentRender";
+import PostOptions from "@/components/shared/PostOptions";
 
 const PostDetails = () => {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ const PostDetails = () => {
   };
 
   return (
-    <div className="post_details-container">
+    <div className="post_details-container w-full">
       <div className="hidden md:flex max-w-5xl w-full">
         <Button
           onClick={() => navigate(-1)}
@@ -99,10 +100,10 @@ const PostDetails = () => {
       {isLoading || !post ? (
         <Loader />
       ) : (
-        <div className="post_details-card flex flex-col md:flex-row items-stretch md:items-start justify-normal h-full">
+        <div className="post_details-card flex flex-col md:flex-row !rounded-lg items-stretch md:items-start justify-normal w-full h-full">
           {post.imageUrl && (
             <div className="md:w-full xl:w-1/2 md:h-full">
-              <img src={post.imageUrl} alt="creator" className="post_details-img md:w-full w-full object-cover h-full " />
+              <img src={post.imageUrl} alt="creator" className=" !rounded-lg !rounded-r-none post_details-img md:w-full !p-0 w-full object-cover h-full " />
             </div>
           )}
           <div className="post_details-info xl:w-1/2 md:full flex flex-col p-4 md:pl-6 overflow-auto h-full">
@@ -184,8 +185,12 @@ const PostDetails = () => {
             </div>
 
             <div className="w-full mt-4">
+              {editingCommentId === null && (
+            <div>
               <hr className="border w-full border-slate-800 mb-5" />
-              <PostStats post={post} userId={user.id} />
+              <PostOptions post={post} userId={user.id} />
+            </div>
+            )}
             </div>
           </div>
         </div>
