@@ -16,17 +16,26 @@ const Topbar = () => {
 
   return (
     <section className="topbar">
-      <div className="flex-between py-4 px-5">
-        <Link to="/" className="flex gap-3 items-center pl-3">
-          <img 
-            src="/assets/icons/Logo-text.svg" 
+       <img 
+          className="w-1/12 fixed flex m-auto max-md:w-1/5 max-sm:w-1/4"
+            src="/assets/icons/beta.png" 
             alt="logo-text"
-            width={95}
+            width={150}
             height={40}
-          />
-        </Link>
+            />
+      <div className="flex items-center justify-between py-4 px-5">
+        <div className="w-1/3">
 
-        <div className="flex gap-4">
+        </div>
+          <Link to="/" className="flex gap-3 justify-center items-center w-1/3">
+            <img 
+              src="/assets/icons/Logo-text.svg" 
+              alt="logo-text"
+              width={95}
+              height={40}
+              />
+          </Link>
+        <div className="flex gap-0 w-1/3 justify-end">
           <Button
             variant="ghost"
             className="shad-button_ghost"
