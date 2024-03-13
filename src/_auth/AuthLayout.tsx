@@ -7,6 +7,15 @@ export default function AuthLayout() {
 
   return (
     <>
+      <>
+      <img 
+          className="w-1/12 fixed start-0 flex m-auto bg-black"
+            src="/assets/icons/beta.png" 
+            alt="logo-text"
+            width={150}
+            height={40}
+            />
+      </>
       {isAuthenticated ? (
         <Navigate to="/" />
       ) : (
