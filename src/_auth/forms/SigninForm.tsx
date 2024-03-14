@@ -104,9 +104,9 @@ const SigninForm = () => {
           />
           <div>
             <Link to="/reset-password" className="text-right pr flex justify-end pb-2">
-              <a className="text-primary-500 text-small-semibold ml-1">
+              <button className="text-primary-500 text-small-semibold ml-1">
                 Reset Password
-              </a>
+              </button>
             </Link>
             <Button type="submit" className="shad-button_primary w-full">
               {isLoading || isUserLoading ? (

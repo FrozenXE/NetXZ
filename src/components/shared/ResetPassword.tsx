@@ -1,18 +1,18 @@
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ToastContainer, toast } from "react-toastify";
 import { account } from "@/lib/appwrite/config";
 
 const ResetPassword = () => {
-  const [userEmail, setuserEmail] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
-  const forgetPassword = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+  const forgetPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (userEmail && userEmail.includes('@')) {
       await account.createRecovery(
         userEmail,
-        "https://netxz.cfd/create-password/"
+        "https://localhost:5173/create-password"
       );
 
       toast.success(`Email has been sent!`);
@@ -31,7 +31,7 @@ const ResetPassword = () => {
           </label>
           <input
             onChange={(e) => {
-              setuserEmail(e.target.value);
+              setUserEmail(e.target.value);
             }}
             type="email"
             name="email"

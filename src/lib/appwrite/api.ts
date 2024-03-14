@@ -1,4 +1,4 @@
-import { ID, Query } from "appwrite";
+import { Account, Client, ID, Query } from "appwrite";
 import { appwriteConfig, account, databases, storage, avatars, } from "./config";
 import { IUpdatePost, INewPost, INewUser, IUpdateUser } from "@/types";
 import { ReactNode } from "react";
@@ -96,7 +96,6 @@ export async function getCurrentUser() {
 
     return currentUser.documents[0];
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -892,36 +891,5 @@ export async function editComment(commentId: string, data: { commentText: string
   } catch (error) {
     console.error("Error editing comment:", error);
     throw error;
-  }
-}
-
-export async function initiatePasswordRecovery(email: string): Promise<void> {
-  try {
-    // Construct the URL with the correct path and query parameters
-    const recoveryUrl = new URL('http://localhost:5173/create-password');
-    recoveryUrl.searchParams.append('email', email);
-
-    // Call the createRecovery method from the Account class
-    await account.createRecovery(email, recoveryUrl.toString());
-  } catch (error) {
-    // Handle errors
-    console.error(error);
-    throw new Error('Password recovery failed');
-  }
-}
-
-
-export async function updateRecovery(userId: string | undefined, secret: string | undefined, password: string): Promise<void> {
-  try {
-    if (userId && secret) {
-      // Call the updateRecovery method from the Account class
-      await account.updateRecovery(userId, secret, password, password);
-    } else {
-      throw new Error('User ID or secret is missing');
-    }
-  } catch (error) {
-    // Handle errors
-    console.error(error);
-    throw new Error('Failed to update password recovery');
   }
 }

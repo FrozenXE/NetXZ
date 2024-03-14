@@ -1,9 +1,11 @@
 import { account } from "@/lib/appwrite/config";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const CreatePassword = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState({
     newPassword: "",
     repeatedPassword: "",
@@ -24,17 +26,15 @@ const CreatePassword = () => {
           password.newPassword,
           password.repeatedPassword
         );
-        // Password successfully updated
         toast.success('Password updated successfully');
       } catch (error) {
-        // Error occurred while updating password
         console.error('Error updating password:', error);
         toast.error('An error occurred while updating password');
       }
     } else {
-      // Passwords don't match
       toast.error('Both new password and the repeated password should be same');
     }
+    navigate("/sign-in"); 
   };
 
   return (

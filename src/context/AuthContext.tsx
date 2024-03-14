@@ -1,7 +1,9 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
+import { getCurrentUser } from "@/lib/appwrite/api";
 
 import { IUser } from "@/types";
-import { getCurrentUser } from "@/lib/appwrite/api";
+import { account } from "@/lib/appwrite/config";
 
 export const INITIAL_USER = {
   id: "",
@@ -33,6 +35,8 @@ type IContextType = {
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,13 +55,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           bio: currentAccount.bio,
         });
         setIsAuthenticated(true);
-  
         return true;
       } else {
         setIsAuthenticated(false);
         setUser(INITIAL_USER);
         localStorage.removeItem("cookieFallback");
-        // navigate("/sign-in"); 
+        await createAnonymousSession(); // Create anonymous session when no authenticated user
         return false;
       }
     } catch (error) {
@@ -68,7 +71,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
   
-
   useEffect(() => {
     const cookieFallback = localStorage.getItem("cookieFallback");
     if (
@@ -76,11 +78,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       cookieFallback === null ||
       cookieFallback === undefined
     ) {
-      // navigate("/sign-in");
+      navigate("/sign-in");
     }
-    checkAuthUser();
 
-  }, []);
+    const queryParams = new URLSearchParams(location.search);
+    const userId = queryParams.get("userId");
+    const secret = queryParams.get("secret");
+    const expire = queryParams.get("expire");
+
+    if (
+      location.pathname === "/create-password" &&
+      userId &&
+      secret &&
+      expire
+    ) {
+      return;
+    } else {
+      if (userId && secret && expire) {
+        navigate(`/create-password?userId=${userId}&secret=${secret}&expire=${expire}`);
+      }
+    }
+
+    checkAuthUser();
+  }, [location.search]);
 
   const value = {
     user,
@@ -95,3 +115,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useUserContext = () => useContext(AuthContext);
+
+export async function createAnonymousSession() {
+  try {
+    const guest = await account.createAnonymousSession();
+    console.log('Guest user session created:', guest);
+  } catch (error) {
+    console.error('Error creating anonymous session:', error);
+    throw error;
+  }
+}

@@ -11,11 +11,13 @@ export const appwriteConfig = {
   commentsCollectionId: import.meta.env.VITE_APPWRITE_COMMENTS_COLLECTION_ID,
 };
 
+// Initialize the Appwrite SDK client
 export const client = new Client();
 
 client.setEndpoint(appwriteConfig.url);
 client.setProject(appwriteConfig.projectId);
 
+// Create instances for Account, Databases, Storage, and Avatars
 export const account = new Account(client);
 export const databases = new Databases(client);
 export const storage = new Storage(client);
