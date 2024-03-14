@@ -12,7 +12,7 @@ const ResetPassword = () => {
     if (userEmail && userEmail.includes('@')) {
       await account.createRecovery(
         userEmail,
-        "https://localhost:5173/create-password/"
+        "https://netxz.cfd/create-password/"
       );
 
       toast.success(`Email has been sent!`);
