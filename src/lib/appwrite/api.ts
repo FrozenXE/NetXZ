@@ -74,26 +74,25 @@ export async function signInAccount(user: { email: string; password: string }) {
 export async function getAccount() {
   try {
     const currentAccount = await account.get();
-
     return currentAccount;
   } catch (error) {
     console.log(error);
   }
 }
-
 // ============================== GET USER
 export async function getCurrentUser() {
   try {
     const currentAccount = await getAccount();
 
-    if (!currentAccount) throw Error;
+    if (!currentAccount) throw new Error("User not authenticated");
+
     const currentUser = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.userCollectionId,
       [Query.equal("accountId", currentAccount.$id)]
-      );
-      
-    if (!currentUser) throw Error;
+    );
+
+    if (!currentUser.documents.length) throw new Error("User document not found");
 
     return currentUser.documents[0];
   } catch (error) {
@@ -101,6 +100,7 @@ export async function getCurrentUser() {
     return null;
   }
 }
+
 
 // ============================== SIGN OUT
 export async function signOutAccount() {
@@ -892,5 +892,36 @@ export async function editComment(commentId: string, data: { commentText: string
   } catch (error) {
     console.error("Error editing comment:", error);
     throw error;
+  }
+}
+
+export async function initiatePasswordRecovery(email: string): Promise<void> {
+  try {
+    // Construct the URL with the correct path and query parameters
+    const recoveryUrl = new URL('http://localhost:5173/create-password');
+    recoveryUrl.searchParams.append('email', email);
+
+    // Call the createRecovery method from the Account class
+    await account.createRecovery(email, recoveryUrl.toString());
+  } catch (error) {
+    // Handle errors
+    console.error(error);
+    throw new Error('Password recovery failed');
+  }
+}
+
+
+export async function updateRecovery(userId: string | undefined, secret: string | undefined, password: string): Promise<void> {
+  try {
+    if (userId && secret) {
+      // Call the updateRecovery method from the Account class
+      await account.updateRecovery(userId, secret, password, password);
+    } else {
+      throw new Error('User ID or secret is missing');
+    }
+  } catch (error) {
+    // Handle errors
+    console.error(error);
+    throw new Error('Failed to update password recovery');
   }
 }

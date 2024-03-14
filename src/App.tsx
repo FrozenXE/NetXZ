@@ -18,6 +18,8 @@ import SigninForm from "@/_auth/forms/SigninForm";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
+import ResetPassword from "./components/shared/ResetPassword";
+import CreatePassword from "./components/shared/CreatePassword";
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
         <Route element={<AuthLayout />}>
           <Route path="/sign-in" element={<SigninForm />} />
           <Route path="/sign-up" element={<SignupForm />} />
+          <Route path="/reset-password" element={<ResetPassword/>}/>
+          <Route path="/create-password" element={<CreatePassword/>}/>
         </Route>
 
         {/* private routes */}

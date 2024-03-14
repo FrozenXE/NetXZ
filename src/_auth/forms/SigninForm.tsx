@@ -1,4 +1,3 @@
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { SigninValidation } from "@/lib/validation";
 import { useSignInAccount } from "@/lib/react-query/queries";
 import { useUserContext } from "@/context/AuthContext";
+import { z } from 'zod';
 
 const SigninForm = () => {
   const { toast } = useToast();
@@ -42,7 +42,7 @@ const SigninForm = () => {
     if (isLoggedIn) {
       form.reset();
 
-      navigate("/");
+      navigate("/sign-in",{replace: true});
     } else {
       toast({ title: "Login failed. Please try again.", });
       
@@ -102,16 +102,22 @@ const SigninForm = () => {
               </FormItem>
             )}
           />
-
-          <Button type="submit" className="shad-button_primary">
-            {isLoading || isUserLoading ? (
-              <div className="flex-center gap-2">
-                <Loader /> Loading...
-              </div>
-            ) : (
-              "Log in"
-            )}
-          </Button>
+          <div>
+            <Link to="/reset-password" className="text-right pr flex justify-end pb-2">
+              <a className="text-primary-500 text-small-semibold ml-1">
+                Reset Password
+              </a>
+            </Link>
+            <Button type="submit" className="shad-button_primary w-full">
+              {isLoading || isUserLoading ? (
+                <div className="flex-center gap-2">
+                  <Loader /> Loading...
+                </div>
+              ) : (
+                "Log in"
+                )}
+            </Button>
+          </div>
 
           <p className="text-small-regular text-light-2 text-center mt-2">
             Don&apos;t have an account?
