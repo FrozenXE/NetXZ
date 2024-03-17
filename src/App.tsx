@@ -18,8 +18,9 @@ import SigninForm from "@/_auth/forms/SigninForm";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
-import ResetPassword from "./components/shared/ResetPassword";
-import CreatePassword from "./components/shared/CreatePassword";
+import ResetPassword from "./components/forms/ResetPassword";
+import CreatePassword from "./components/forms/CreatePassword";
+import Verify from "./components/shared/Verify";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/sign-up" element={<SignupForm />} />
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/create-password" element={<CreatePassword/>}/>
+          <Route path="/verify" element={<Verify/>}/>
         </Route>
 
         {/* private routes */}

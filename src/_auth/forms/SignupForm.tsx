@@ -12,6 +12,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queries";
 import { SignupValidation } from "@/lib/validation";
 import { useUserContext } from "@/context/AuthContext";
+import { sendVerificationEmail } from "@/lib/appwrite/api";
 
 const SignupForm = () => {
   const { toast } = useToast();
@@ -48,11 +49,17 @@ const SignupForm = () => {
       if (!session) {
         toast({ title: "Something went wrong. Please login your new account", });
         
-        navigate("/sign-in");
+        navigate("/verify");
         
         return;
       }
-
+      const verificationUrl = 'https://localhost:5173/verify';
+      if (newUser) {
+        await sendVerificationEmail(verificationUrl);
+        navigate("/verify");
+      } else {
+        toast({ title: "Sign up failed. Please try again." });
+      }
       const isLoggedIn = await checkAuthUser();
 
       if (isLoggedIn) {

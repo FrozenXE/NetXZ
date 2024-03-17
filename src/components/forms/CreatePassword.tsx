@@ -12,7 +12,7 @@ const CreatePassword = () => {
   });
 
   const changePassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
 
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("userId")!;

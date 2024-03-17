@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getCurrentUser } from "@/lib/appwrite/api";
 
 import { IUser } from "@/types";
-import { account } from "@/lib/appwrite/config";
 
 export const INITIAL_USER = {
   id: "",
@@ -60,7 +59,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(false);
         setUser(INITIAL_USER);
         localStorage.removeItem("cookieFallback");
-        await createAnonymousSession(); // Create anonymous session when no authenticated user
         return false;
       }
     } catch (error) {
@@ -70,38 +68,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     }
   };
-  
   useEffect(() => {
-    const cookieFallback = localStorage.getItem("cookieFallback");
-    if (
-      cookieFallback === "[]" ||
-      cookieFallback === null ||
-      cookieFallback === undefined
-    ) {
-      navigate("/sign-in");
-    }
-
     const queryParams = new URLSearchParams(location.search);
     const userId = queryParams.get("userId");
     const secret = queryParams.get("secret");
     const expire = queryParams.get("expire");
-
+  
+    const initializeAuth = async () => {
+      try {
+        setIsLoading(true);
+        await checkAuthUser();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
     if (
       location.pathname === "/create-password" &&
       userId &&
       secret &&
       expire
     ) {
-      return;
+      initializeAuth();
     } else {
-      if (userId && secret && expire) {
+      if (!userId || !secret || !expire) {
+        navigate("/sign-in");
+      } else {
         navigate(`/create-password?userId=${userId}&secret=${secret}&expire=${expire}`);
       }
     }
-
-    checkAuthUser();
   }, [location.search]);
-
+  
+  
   const value = {
     user,
     setUser,
@@ -115,13 +115,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useUserContext = () => useContext(AuthContext);
-
-export async function createAnonymousSession() {
-  try {
-    const guest = await account.createAnonymousSession();
-    console.log('Guest user session created:', guest);
-  } catch (error) {
-    console.error('Error creating anonymous session:', error);
-    throw error;
-  }
-}

@@ -1,4 +1,4 @@
-import { Account, Client, ID, Query } from "appwrite";
+import { ID, Query } from "appwrite";
 import { appwriteConfig, account, databases, storage, avatars, } from "./config";
 import { IUpdatePost, INewPost, INewUser, IUpdateUser } from "@/types";
 import { ReactNode } from "react";
@@ -29,13 +29,35 @@ export async function createUserAccount(user: INewUser) {
       username: user.username,
       imageUrl: avatarUrl,
     });
-
     return newUser;
   } catch (error) {
     console.log(error);
     return error;
   }
+  
 }
+export async function sendVerificationEmail(verificationUrl: string): Promise<void> {
+  try {
+    const verificationPromise = account.createVerification(verificationUrl);
+
+    await verificationPromise;
+  } catch (error) {
+    console.error('Failed to send verification email:', error);
+    throw error;
+  }
+}
+
+export async function updateVerification(userId: string, secret: string): Promise<void> {
+  try {
+    const response = await account.updateVerification(userId, secret);
+    console.log('Verification response:', response);
+  } catch (error) {
+    console.error('Verification error:', error);
+    throw error;
+  }
+}
+
+
 
 // ============================== SAVE USER TO DB
 export async function saveUserToDB(user: {
@@ -44,7 +66,7 @@ export async function saveUserToDB(user: {
   name: string;
   imageUrl: URL;
   username?: string;
-}) {
+}): Promise<any> {
   try {
     const newUser = await databases.createDocument(
       appwriteConfig.databaseId,
@@ -55,7 +77,8 @@ export async function saveUserToDB(user: {
 
     return newUser;
   } catch (error) {
-    console.log(error);
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
