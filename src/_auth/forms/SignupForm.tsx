@@ -54,12 +54,12 @@ const SignupForm = () => {
         return;
       }
       const verificationUrl = 'https://localhost:5173/verify';
-      if (newUser) {
-        await sendVerificationEmail(verificationUrl);
-        navigate("/verify");
-      } else {
-        toast({ title: "Sign up failed. Please try again." });
-      }
+      // if (newUser) {
+      //   await sendVerificationEmail(verificationUrl);
+      //   navigate("/verify");
+      // } else {
+      //   toast({ title: "Sign up failed. Please try again." });
+      // }
       const isLoggedIn = await checkAuthUser();
 
       if (isLoggedIn) {
