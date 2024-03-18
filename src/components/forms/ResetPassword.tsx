@@ -28,7 +28,17 @@ const ResetPassword = () => {
   };
 
   return (
-    <><div className="mt-7 bg-gray-900 w-2/3 rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700 border-2 border-slate-600">
+    <>
+      <div className="w-full">
+      <img 
+          className="w-1/5 start-0 flex m-auto max-md:w-1/5 max-sm:w-1/4"
+            src="/assets/images/logo.svg" 
+            alt="logo-text"
+            width={150}
+            height={40}
+            />
+      </div>
+    <div className="mt-7 bg-gray-900 w-2/3 rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700 border-2 border-slate-600 max-sm:w-5/6" >
       <div className="p-4 sm:p-7">
         <div className="text-center">
           <h1 className="block text-2xl font-bold text-white dark:text-white">Forgot password?</h1>

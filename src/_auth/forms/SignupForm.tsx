@@ -109,7 +109,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Name</FormLabel>
                 <FormControl>
-                  <Input type="text" className="shad-input" {...field} />
+                  <Input type="text" className="py-3 px-4 block w-full border-2 border-gray-600 bg-transparent h-30 rounded-md text-sm focus:gray-400 focus:gray-400 shadow-sm" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,7 +123,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Username</FormLabel>
                 <FormControl>
-                  <Input type="text" className="shad-input" {...field} />
+                  <Input type="text" className="py-3 px-4 block w-full border-2 border-gray-600 bg-transparent h-30 rounded-md text-sm focus:gray-400 focus:gray-400 shadow-sm" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -137,7 +137,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Email</FormLabel>
                 <FormControl>
-                  <Input type="text" className="shad-input" {...field} />
+                  <Input type="text" className="py-3 px-4 block w-full border-2 border-gray-600 bg-transparent h-30 rounded-md text-sm focus:gray-400 focus:gray-400 shadow-sm" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -151,7 +151,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" className="shad-input" {...field} />
+                  <Input type="password" className="py-3 px-4 block w-full border-2 border-gray-600 bg-transparent h-30 rounded-md text-sm focus:gray-400 focus:gray-400 shadow-sm" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
