@@ -12,7 +12,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queries";
 import { SignupValidation } from "@/lib/validation";
 import { useUserContext } from "@/context/AuthContext";
-import { sendVerificationEmail } from "@/lib/appwrite/api";
 
 const SignupForm = () => {
   const { toast } = useToast();
@@ -53,7 +52,7 @@ const SignupForm = () => {
         
         return;
       }
-      const verificationUrl = 'https://localhost:5173/verify';
+      // const verificationUrl = 'https://localhost:5173/verify';
       // if (newUser) {
       //   await sendVerificationEmail(verificationUrl);
       //   navigate("/verify");
