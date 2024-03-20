@@ -69,11 +69,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const userId = queryParams.get("userId");
-    const secret = queryParams.get("secret");
-    const expire = queryParams.get("expire");
-  
     const initializeAuth = async () => {
       try {
         setIsLoading(true);
@@ -84,23 +79,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
       }
     };
-  
-    if (
-      location.pathname === "/create-password" &&
-      userId &&
-      secret &&
-      expire
-    ) {
+
+    if (!isAuthenticated) {
       initializeAuth();
-    } else {
-      if (!userId || !secret || !expire) {
-        navigate("/sign-in");
-      } else {
-        navigate(`/create-password?userId=${userId}&secret=${secret}&expire=${expire}`);
-      }
     }
-  }, [location.search]);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const userId = queryParams.get("userId");
+    const secret = queryParams.get("secret");
+    const expire = queryParams.get("expire");
+    
+    const redirectToSignIn = () => {
+      navigate("/sign-in");
+    };
   
+    const handleAuthentication = async () => {
+      if (
+        location.pathname === "/create-password" &&
+        userId &&
+        secret &&
+        expire
+      ) {
+        if (!isAuthenticated) {
+          await checkAuthUser();
+        }
+      } else {
+        if (!isAuthenticated) {
+          redirectToSignIn();
+        }
+      }
+    };
+  
+    handleAuthentication();
+  }, [location.search, isAuthenticated]);
   
   const value = {
     user,

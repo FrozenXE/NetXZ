@@ -34,13 +34,10 @@ const SigninForm = () => {
       toast.error("Login failed. Please double check your email or password.");
       return;
     }
-
     const isLoggedIn = await checkAuthUser();
-
     if (isLoggedIn) {
       form.reset();
-
-      navigate("/sign-in",{replace: true});
+      navigate("/sign-in");
     } else {
       toast.error("Login failed. Please try again.");
       
