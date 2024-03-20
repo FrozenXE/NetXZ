@@ -12,8 +12,7 @@ import {
 import { CommentData, createComment, deleteComment, editComment, getCommentsData } from "@/lib/appwrite/api";
 import PopupComment from "./popupComment";
 import { useUserContext } from "@/context/AuthContext";
-import { toast } from "../ui/use-toast";
-
+import { ToastContainer, toast } from "react-toastify";
 
 type PostOptions = {
   post: Models.Document;
@@ -106,13 +105,9 @@ const PostOptions: React.FC<PostOptions> = ({ post, userId }) => {
       await deleteComment(commentId);
       const updatedCommentsData = commentsData.filter((comment) => comment.commentId !== commentId);
       setCommentsData(updatedCommentsData);
-      toast({
-        title: `Comment succesfully deleted.`,
-      });
+      toast.success(`Comment succesfully deleted.`);
     } catch (error) {
-      toast({
-        title: `Comment failed to delete, please try again`,
-      });
+      toast.error(`Comment failed to delete, please try again`);
     }
   };
 
@@ -239,7 +234,16 @@ const PostOptions: React.FC<PostOptions> = ({ post, userId }) => {
       )}
       </div>
     </div>
-    
+    <ToastContainer
+          position="bottom-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
     </>
   );
 };

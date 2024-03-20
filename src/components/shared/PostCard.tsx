@@ -7,7 +7,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { Button } from "../ui/button";
 import { useDeletePost } from "@/lib/react-query/queries";
 import ConfirmationDelete from "../forms/ConfirmationDelete";
-import { useToast } from "../ui/use-toast";
+import { ToastContainer, toast } from "react-toastify";
 
 type PostCardProps = {
   post: Models.Document;
@@ -15,7 +15,6 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
-  const { toast } = useToast();
   const [isDeleted, setIsDeleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { mutate: deletePost } = useDeletePost();
@@ -27,13 +26,9 @@ const PostCard = ({ post }: PostCardProps) => {
       await deletePost({ postId: post.$id, imageId: post?.imageId });
       setIsDeleted(true);
       setShowConfirmation(false);
-      toast({
-        title: `Post succesfully deleted.`,
-      });
+      toast.success(`Post succesfully deleted.`);
     } catch (error) {
-      toast({
-        title: `Post failed to delete, Please try again.`,
-      });
+      toast.error(`Post failed to delete, Please try again.`);
     }
   };
 
@@ -108,6 +103,16 @@ const PostCard = ({ post }: PostCardProps) => {
       </Link>
 
       <PostStats post={post} userId={user.id}/>
+      <ToastContainer
+          position="bottom-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
     </div>
   );
 };

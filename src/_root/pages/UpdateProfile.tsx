@@ -11,16 +11,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
 import { Textarea, Input, Button } from "@/components/ui";
 import { ProfileUploader, Loader } from "@/components/shared";
 
 import { ProfileValidation } from "@/lib/validation";
 import { useUserContext } from "@/context/AuthContext";
 import { useGetUserById, useUpdateUser } from "@/lib/react-query/queries";
+import { ToastContainer, toast } from "react-toastify";
 
 const UpdateProfile = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { id } = useParams();
   const { user, setUser } = useUserContext();
@@ -57,9 +56,7 @@ const UpdateProfile = () => {
     });
 
     if (!updatedUser) {
-      toast({
-        title: `Update user failed. Please try again.`,
-      });
+      toast.error(`Update user failed. Please try again.`);
     }
 
     setUser({
@@ -192,6 +189,16 @@ const UpdateProfile = () => {
           </form>
         </Form>
       </div>
+      <ToastContainer
+          position="bottom-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
     </div>
   );
 };

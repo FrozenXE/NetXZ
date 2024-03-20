@@ -6,7 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/shared/Loader";
-import { useToast } from "@/components/ui/use-toast";
+import { ToastContainer, toast } from "react-toastify";
 
 import { SigninValidation } from "@/lib/validation";
 import { useSignInAccount } from "@/lib/react-query/queries";
@@ -14,7 +14,6 @@ import { useUserContext } from "@/context/AuthContext";
 import { z } from 'zod';
 
 const SigninForm = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
@@ -32,8 +31,7 @@ const SigninForm = () => {
     const session = await signInAccount(user);
 
     if (!session) {
-      toast({ title: "Login failed. Please try again." });
-      
+      toast.error("Login failed. Please double check your email or password.");
       return;
     }
 
@@ -44,7 +42,7 @@ const SigninForm = () => {
 
       navigate("/sign-in",{replace: true});
     } else {
-      toast({ title: "Login failed. Please try again.", });
+      toast.error("Login failed. Please try again.");
       
       return;
     }
@@ -129,7 +127,18 @@ const SigninForm = () => {
           </p>
         </form>
       </div>
+      <ToastContainer
+          position="bottom-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
     </Form>
+    
   );
 };
 

@@ -1,5 +1,4 @@
 import { Models } from "appwrite";
-
 import { Loader, PostCard, UserCard } from "@/components/shared";
 import { useGetRecentPosts, useGetUsers } from "@/lib/react-query/queries";
 

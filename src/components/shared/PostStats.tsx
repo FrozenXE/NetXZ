@@ -13,7 +13,7 @@ import { CommentData, createComment, deleteComment, editComment, getCommentsData
 import PopupComment from "./popupComment";
 import { useUserContext } from "@/context/AuthContext";
 import RenderOneComment from "./RenderOneComment";
-import { toast } from "../ui/use-toast";
+import { toast } from "react-toastify";
 
 
 type PostStatsProps = {
@@ -129,13 +129,9 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
       await deleteComment(commentId);
       const updatedCommentsData = commentsData.filter((comment) => comment.commentId !== commentId);
       setCommentsData(updatedCommentsData);
-      toast({
-        title: `Comment succesfully deleted.`,
-      });
+      toast.success(`Comment succesfully deleted.`);
     } catch (error) {
-      toast({
-        title: `Comment failed to delete, please try again`,
-      });
+      toast.error(`Comment failed to delete, please try again`);
     }
   };
 

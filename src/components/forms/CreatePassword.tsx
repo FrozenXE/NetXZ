@@ -18,37 +18,42 @@ const CreatePassword = () => {
     const userId = urlParams.get("userId")!;
     const secret = urlParams.get("secret")!;
 
-    if (password.newPassword === password.repeatedPassword) {
-      try {
-        await account.updateRecovery(
-          userId,
-          secret,
-          password.newPassword,
-          password.repeatedPassword
-        );
-        toast.success('Password updated successfully');
-      } catch (error) {
-        console.error('Error updating password:', error);
-        toast.error('An error occurred while updating password');
-      }
+    if (password.newPassword === password.repeatedPassword ) {
+      if(password.newPassword.length >= 8){
+        try {
+          await account.updateRecovery(
+            userId,
+            secret,
+            password.newPassword,
+            password.repeatedPassword
+            );
+            toast.success('Password updated successfully');
+          } catch (error) {
+            console.error('Error updating password:', error);
+            toast.error('An error occurred while updating password');
+          }
+        navigate("/sign-in");
+    }
+    else{
+      toast.error('Passwords must be at least 8 characters long!')
+    }
     } else {
       toast.error('Both new password and the repeated password should be same');
     }
-    navigate("/sign-in"); 
   };
 
   return (
     <>
-    <div className="w-full">
+    <div className="w-full max-sm:w-full">
       <img 
-          className="w-1/5 start-0 flex m-auto max-md:w-1/5 max-sm:w-1/4"
+          className="w-1/5 start-0 flex m-auto max-md:w-1/5 max-sm:w-1/3"
             src="/assets/images/logo.svg" 
             alt="logo-text"
             width={150}
             height={40}
             />
       </div>
-    <div className="flex w-3/4 flex-col items-center gap-5 justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 max-sm:w-5/">
+    <div className="flex w-3/4 max-sm:w-full flex-col items-center gap-5 justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 max-sm:w-5/">
       <div className="w-full p-6 border-2 bg-gray-900 border-slate-600 rounded-lg shadow dark:border md:mt-0 sm:max-w-md dark:bg-white dark:border-white sm:p-8 ">
         <h2 className="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-300 md:text-2xl dark:text-white">
           Change Password
@@ -92,8 +97,8 @@ const CreatePassword = () => {
             </button>
         </form>
         <ToastContainer
-          position="top-right"
-          autoClose={3000}
+          position="bottom-right"
+          autoClose={4000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick

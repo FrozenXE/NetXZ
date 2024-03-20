@@ -16,10 +16,10 @@ import {
   Textarea,
 } from "@/components/ui";
 import { PostValidation } from "@/lib/validation";
-import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
 import { FileUploader, Loader } from "@/components/shared";
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
+import { ToastContainer, toast } from "react-toastify";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -28,7 +28,6 @@ type PostFormProps = {
 
 const PostForm = ({ post, action }: PostFormProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { user } = useUserContext();
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
@@ -54,9 +53,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
       });
 
       if (!updatedPost) {
-        toast({
-          title: `${action} post failed. Please try again.`,
-        });
+        toast.error(`${action} post failed. Please try again.`);
       }
       return navigate(`/posts/${post.$id}`);
     }
@@ -66,9 +63,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
     });
 
     if (!newPost) {
-      toast({
-        title: `${action} post failed. Please try again.`,
-      });
+      toast.error(`${action} post failed. Please try again.`);
     }
     navigate("/");
   };
@@ -150,6 +145,16 @@ const PostForm = ({ post, action }: PostFormProps) => {
           </Button>
         </div>
       </form>
+      <ToastContainer
+          position="bottom-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
     </Form>
   );
 };

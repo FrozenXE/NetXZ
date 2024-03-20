@@ -1,14 +1,13 @@
-import { useToast } from "@/components/ui/use-toast";
 import { Loader, UserCard } from "@/components/shared";
 import { useGetUsers } from "@/lib/react-query/queries";
+import { ToastContainer, toast } from "react-toastify";
 
 const AllUsers = () => {
-  const { toast } = useToast();
 
   const { data: creators, isLoading, isError: isErrorCreators } = useGetUsers();
 
   if (isErrorCreators) {
-    toast({ title: "Something went wrong." });
+    toast.error("Something went wrong.");
     
     return;
   }
@@ -29,6 +28,16 @@ const AllUsers = () => {
           </ul>
         )}
       </div>
+      <ToastContainer
+          position="bottom-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
     </div>
   );
 };
