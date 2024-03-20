@@ -20,7 +20,7 @@ export default function AuthLayout() {
         <Navigate to="/" />
       ) : (
         <>
-          <section className="flex flex-1 justify-center items-center flex-col py-10 pt-0 bg-back ">
+          <section className="flex flex-1 justify-center items-center flex-col py-10 pt-0 bg-test ">
             <Outlet />
           </section>
 

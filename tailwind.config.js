@@ -38,7 +38,8 @@ module.exports = {
         'darkred':'8B0000',
         'white1': 'D7D7D7',
         'back': '#151723',
-        'errorr': '#B00020'
+        'errorr': '#B00020',
+        'test':'rgb(9 9 10 / var(--tw-bg-opacity))'
       },
       screens: {
         'xs': '480px',

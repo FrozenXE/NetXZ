@@ -26,7 +26,7 @@ const LeftSidebar = () => {
 
   return (
     <nav className="leftsidebar">
-      <div className="flex flex-col gap-11 justify-center">
+      <div className="flex flex-col gap-10 justify-center">
         <Link to="/" className="flex gap items-center gap-5 ">
           <img
             src="/assets/images/logo.svg"
@@ -63,7 +63,6 @@ const LeftSidebar = () => {
         <ul className="flex flex-col gap-6">
           {sidebarLinks.map((link: INavLink) => {
             const isActive = pathname === link.route;
-
             return (
               <li
                 key={link.label}
@@ -72,7 +71,7 @@ const LeftSidebar = () => {
                 }`}>
                 <NavLink
                   to={link.route}
-                  className="flex gap-4 items-center p-4">
+                  className="flex gap-4 items-center p-2">
                   <img
                     src={link.imgURL}
                     alt={link.label}
@@ -90,7 +89,7 @@ const LeftSidebar = () => {
 
       <Button
         variant="ghost"
-        className="shad-button_ghost"
+        className="shad-button_ghost p-2"
         onClick={(e) => handleSignOut(e)}>
         <img src="/assets/icons/logout.svg" alt="logout" />
         <p className="small-medium lg:base-medium">Logout</p>
