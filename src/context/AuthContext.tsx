@@ -1,46 +1,48 @@
-import { useNavigate, useLocation } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getCurrentUser } from "@/lib/appwrite/api";
-
 import { IUser } from "@/types";
 
-export const INITIAL_USER = {
+export const INITIAL_USER: IUser = {
   id: "",
   name: "",
   username: "",
   email: "",
-  imageUrl: "", 
+  imageUrl: "",
   bio: "",
 };
 
-const INITIAL_STATE = {
-  user: INITIAL_USER,
-  isLoading: false,
-  isAuthenticated: false,
-  setUser: () => {},
-  setIsAuthenticated: () => {},
-  checkAuthUser: async () => false as boolean,
-};
-
-type IContextType = {
+interface IContextType {
   user: IUser;
   isLoading: boolean;
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   checkAuthUser: () => Promise<boolean>;
-};
+  logout: () => void;
+}
 
-const AuthContext = createContext<IContextType>(INITIAL_STATE);
+const AuthContext = createContext<IContextType>({
+  user: INITIAL_USER,
+  isLoading: false,
+  setUser: () => {},
+  isAuthenticated: false,
+  setIsAuthenticated: () => {},
+  checkAuthUser: async () => false,
+  logout: () => {},
+});
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const checkAuthUser = async () => {
+  const checkAuthUser = async (): Promise<boolean> => {
     setIsLoading(true);
     try {
       const currentAccount = await getCurrentUser();
@@ -63,11 +65,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error(error);
+      setIsAuthenticated(false);
       return false;
     } finally {
       setIsLoading(false);
+      setIsInitialized(true);
     }
   };
+
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -77,6 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error(error);
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -90,11 +96,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const userId = queryParams.get("userId");
     const secret = queryParams.get("secret");
     const expire = queryParams.get("expire");
-    
+
     const redirectToSignIn = () => {
       navigate("/sign-in");
     };
-  
+
     const handleAuthentication = async () => {
       if (
         location.pathname === "/create-password" &&
@@ -106,15 +112,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await checkAuthUser();
         }
       } else {
-        if (!isAuthenticated) {
+        if (!isAuthenticated && isInitialized) {
           redirectToSignIn();
         }
       }
     };
-  
+
     handleAuthentication();
-  }, [location.search, isAuthenticated]);
-  
+  }, [location.search, isAuthenticated, isInitialized]);
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    setUser(INITIAL_USER);
+    navigate("/sign-in");
+  };
+
   const value = {
     user,
     setUser,
@@ -122,9 +134,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     setIsAuthenticated,
     checkAuthUser,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+};
 
-export const useUserContext = () => useContext(AuthContext);
+export const useUserContext = (): IContextType => useContext(AuthContext);
