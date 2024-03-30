@@ -22,6 +22,7 @@ const RootLayout = () => {
 
       <section className="flex flex-1 h-ful">
         <Outlet />
+        
       </section>
 
       <Bottombar />
