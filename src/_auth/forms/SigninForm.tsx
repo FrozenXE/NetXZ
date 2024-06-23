@@ -99,9 +99,9 @@ const SigninForm = () => {
           />
           <div>
             <Link to="/reset-password" className="text-right pr flex justify-end pb-2">
-              <button className="text-md text-gray-400 decoration-2 hover:underline hover:text-blue-600 dark:text-gray-500 dark:hover:text-gray-200">
+              <span className="text-md text-gray-400 decoration-2 hover:underline hover:text-blue-600 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer">
                 Reset Password
-              </button>
+              </span>
             </Link>
             <Button type="submit" className="rounded-md border  border-transparent font-semibold bg-slate-800 hover:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-all text-md dark:focus:ring-offset-gray-800 text-gray-300 w-full">
               {isLoading || isUserLoading ? (

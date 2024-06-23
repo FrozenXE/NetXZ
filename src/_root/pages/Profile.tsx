@@ -14,12 +14,12 @@ import { useEffect, useState } from "react";
 import { GridPostList, Loader } from "@/components/shared";
 import { getFollowersCount, getFollowingsCount, isFollowingA } from "@/lib/appwrite/api";
 
-interface StabBlockProps {
+interface StatBlockProps {
   value: string | number;
   label: string;
 }
 
-const StatBlock = ({ value, label }: StabBlockProps) => (
+const StatBlock = ({ value, label }: StatBlockProps) => (
   <div className="flex-center gap-2">
     <p className="small-semibold lg:body-bold text-primary-500">{value}</p>
     <p className="small-medium lg:base-medium text-light-2">{label}</p>
@@ -35,6 +35,7 @@ const Profile = () => {
   const [followingsCount, setFollowingsCount] = useState<number>(0);
   const isFollowingQuery = useIsFollowingQuery(id || "");
   const [isFollowing, setIsFollowing] = useState(isFollowingQuery.data ?? false);
+  const [isLoading, setIsLoading] = useState(true); // New loading state
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -49,10 +50,14 @@ const Profile = () => {
         }
       } catch (error) {
         console.error('Error fetching follower and following counts:', error);
+      } finally {
+        setIsLoading(false); // Set loading to false once fetching is complete
       }
     };
   
-    fetchCounts();
+    if (currentUser?.$id) {
+      fetchCounts();
+    }
   }, [currentUser]);
   
   const followUserMutation = useFollowUser();
@@ -85,10 +90,8 @@ const Profile = () => {
         setFollowersCount((prevCount) => prevCount + 1);
     }
   };
-  
 
-
-  if (!currentUser) {
+  if (!currentUser || isLoading) { // Check both currentUser and isLoading
     return (
       <div className="flex-center w-full h-full">
         <Loader />

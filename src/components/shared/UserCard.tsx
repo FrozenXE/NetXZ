@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
@@ -13,20 +14,30 @@ const UserCard = ({ user }: UserCardProps) => {
   const followUserMutation = useFollowUser();
   const unfollowUserMutation = useUnfollowUser();
 
+  const [isFollowing, setIsFollowing] = useState(isFollowingUser);
+
+  useEffect(() => {
+    setIsFollowing(isFollowingUser);
+  }, [isFollowingUser]);
+
   const handleFollow = async () => {
+    setIsFollowing(true);
     try {
       await followUserMutation.mutateAsync(user.$id);
       refetch();
     } catch (error) {
+      setIsFollowing(false);
       console.error("Error following user:", error);
     }
   };
 
   const handleUnfollow = async () => {
+    setIsFollowing(false);
     try {
       await unfollowUserMutation.mutateAsync(user.$id);
       refetch();
     } catch (error) {
+      setIsFollowing(true);
       console.error("Error unfollowing user:", error);
     }
   };
@@ -52,14 +63,14 @@ const UserCard = ({ user }: UserCardProps) => {
           </p>
         </div>
       </Link>
-      {currentUser?.$id !== user.$id && isFollowingUser !== undefined && ( 
+      {currentUser?.$id !== user.$id && isFollowing !== undefined && ( 
         <Button
           type="button"
           size="sm"
           className="shad-button_primary px-5"
-          onClick={isFollowingUser ? handleUnfollow : handleFollow}
+          onClick={isFollowing ? handleUnfollow : handleFollow}
         >
-          {isFollowingUser ? "Unfollow" : "Follow"}
+          {isFollowing ? "Unfollow" : "Follow"}
         </Button>
       )}
     </div>
