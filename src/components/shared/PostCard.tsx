@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { useDeletePost } from "@/lib/react-query/queries";
 import ConfirmationDelete from "../forms/ConfirmationDelete";
 import { ToastContainer, toast } from "react-toastify";
+import useIsMobile from "./useIsMobile";
 
 type PostCardProps = {
   post: Models.Document;
@@ -18,6 +19,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { mutate: deletePost } = useDeletePost();
+  const isMobile = useIsMobile(); // Use the custom hook
 
   if (!post.creator || isDeleted) return null;
 
@@ -26,7 +28,7 @@ const PostCard = ({ post }: PostCardProps) => {
       await deletePost({ postId: post.$id, imageId: post?.imageId });
       setIsDeleted(true);
       setShowConfirmation(false);
-      toast.success(`Post succesfully deleted.`);
+      toast.success(`Post successfully deleted.`);
     } catch (error) {
       toast.error(`Post failed to delete, Please try again.`);
     }
@@ -81,7 +83,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
       </div>
 
-      <Link to={`/posts/${post.$id}`}>
+      {isMobile ? (
         <div className="small-medium lg:base-medium py-5">
           <p>{post.caption}</p>
           <ul className="flex gap-1 mt-2">
@@ -91,28 +93,47 @@ const PostCard = ({ post }: PostCardProps) => {
               </li>
             ))}
           </ul>
+          {post.imageUrl && (
+            <img
+              src={post.imageUrl}
+              alt="post image"
+              className="post-card_img !rounded-none"
+            />
+          )}
         </div>
-
-        {post.imageUrl && (
-          <img
-            src={post.imageUrl}
-            alt="post image"
-            className="post-card_img !rounded-none"
-          />
-        )}
-      </Link>
+      ) : (
+        <Link to={`/posts/${post.$id}`}>
+          <div className="small-medium lg:base-medium py-5">
+            <p>{post.caption}</p>
+            <ul className="flex gap-1 mt-2">
+              {post.tags.map((tag: string, index: string) => (
+                <li key={`${tag}${index}`} className="text-light-3 small-regular">
+                  #{tag}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {post.imageUrl && (
+            <img
+              src={post.imageUrl}
+              alt="post image"
+              className="post-card_img !rounded-none"
+            />
+          )}
+        </Link>
+      )}
 
       <PostStats post={post} userId={user.id}/>
       <ToastContainer
-          position="bottom-right"
-          autoClose={4000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover />
+        position="bottom-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover />
     </div>
   );
 };
