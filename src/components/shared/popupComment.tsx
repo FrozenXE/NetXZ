@@ -30,10 +30,8 @@ const PopupComment: React.FC<PopupCommentProps> = ({
   handleCancelEdit,
   user,
   handleEditButtonClick,
-  handleDeleteComment,
   loading,
   postId,
-  handleCommentFormSubmit,
   commentFormClassName
 }) => {
   const [refreshing, setRefreshing] = useState(false);

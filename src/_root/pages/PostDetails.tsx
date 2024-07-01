@@ -170,15 +170,17 @@ const PostDetails = () => {
                 <ul className="space-y-4">
                   {postComments.map((comment) => (
                   <CommentRender
-                    key={comment.commentId}
-                    comment={comment}
-                    editingCommentId={editingCommentId}
-                    handleEditComment={handleEditComment}
-                    handleCancelEdit={handleCancelEdit}
-                    user={user}
-                    handleEditButtonClick={handleEditButtonClick}
-                    handleDeleteComment={handleDeleteComment}
-                  />
+                      key={comment.commentId}
+                      editingCommentId={editingCommentId}
+                      handleEditComment={handleEditComment}
+                      handleCancelEdit={handleCancelEdit}
+                      user={user}
+                      handleEditButtonClick={handleEditButtonClick}
+                      handleDeleteComment={handleDeleteComment} onClose={function (): void {
+                        throw new Error("Function not implemented.");
+                      } } comments={[]} loading={false} postId={""} handleCommentFormSubmit={function (formData: { comment: string; }): Promise<void> {
+                        throw new Error("Function not implemented.");
+                      } }                  />
                 ))}
                 </ul>
               )}
