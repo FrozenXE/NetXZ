@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">netxz-mobile</string>
+    <string name="title_activity_main">netxz-mobile</string>
+    <string name="package_name">netxz.cfd</string>
+    <string name="custom_url_scheme">netxz.cfd</string>
+</resources>
