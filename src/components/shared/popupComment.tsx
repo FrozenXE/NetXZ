@@ -39,12 +39,9 @@ const PopupComment: React.FC<PopupCommentProps> = ({
 
   const fetchComments = async (useCache: boolean = true) => {
     try {
-      console.log("Fetching comments...");
       const data = await getCommentsData(useCache);
-      console.log("All comments fetched:", data);
       const filteredComments = data.filter(comment => comment.postId === postId);
       const sortedComments = filteredComments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      console.log("Filtered and sorted comments for postId", postId, ":", sortedComments);
       setComments(sortedComments);
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -52,11 +49,9 @@ const PopupComment: React.FC<PopupCommentProps> = ({
   };
 
   const handleRefresh = async () => {
-    console.log("Starting refresh...");
     setRefreshing(true);
     await fetchComments(false); 
     setRefreshing(false);
-    console.log("Refresh complete.");
   };
 
   const handleNewComment = async (commentText: string) => {
