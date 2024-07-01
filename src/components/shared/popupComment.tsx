@@ -4,7 +4,6 @@ import EditComment from '@/_root/pages/EditComment';
 import { multiFormatDateString } from "@/lib/utils";
 import { CommentData, getCommentsData, createComment, deleteComment } from '@/lib/appwrite/api';
 import CommentFormMobile from "../forms/CommentFormMobile";
-import PullToRefresh from 'react-pull-to-refresh';
 import { Loader } from "@/components/shared";
 
 type PopupCommentProps = {
@@ -48,11 +47,6 @@ const PopupComment: React.FC<PopupCommentProps> = ({
     }
   };
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchComments(false); 
-    setRefreshing(false);
-  };
 
   const handleNewComment = async (commentText: string) => {
     try {
@@ -80,9 +74,40 @@ const PopupComment: React.FC<PopupCommentProps> = ({
     handleEditButtonClick(commentId);
   };
 
+  // Custom pull-to-refresh implementation
+  const [dragging, setDragging] = useState(false);
+  const [dragY, setDragY] = useState(0);
+  const [originalY, setOriginalY] = useState(0);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setOriginalY(e.touches[0].clientY);
+    setDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+
+    const dragDistance = e.touches[0].clientY - originalY;
+    setDragY(dragDistance);
+  };
+
+  const handleTouchEnd = () => {
+    if (dragY >= 300) {
+      setRefreshing(true);
+      fetchComments(false)
+        .then(() => setRefreshing(false))
+        .catch((error) => {
+          console.error("Error refreshing comments:", error);
+          setRefreshing(false);
+        });
+    }
+    setDragging(false);
+    setDragY(0);
+  };
+
   return (
-    <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 !.p-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
-      <div className="relative w-full max-w-2xl max-h-full">
+    <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="bg-zinc-800 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
+      <div className="relative h-full w-full max-w-2xl max-h-full ">
         <div className="relative bg-zinc-800 rounded-lg shadow h-screen">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-xl font-semibold text-white dark:text-white">Comments</h3>
@@ -97,67 +122,70 @@ const PopupComment: React.FC<PopupCommentProps> = ({
               <span className="sr-only">Close modal</span>
             </button>
           </div>
-          <PullToRefresh onRefresh={handleRefresh}>
-            <div className="p-4 md:p-5 space-y-4">
-              {loading || refreshing ? (
-                <Loader />
-              ) : (
-                <ul>
-                  {comments.map((comment) => (
-                    <li key={comment.commentId} className="flex justify-center relative top-1/3 w-full border-white !mt-0">
-                      {editingCommentId === comment.commentId ? (
-                        <EditComment
-                          initialCommentText={comment.commentText}
-                          onSave={(updatedCommentText: string) => handleEditComment(comment.commentId, updatedCommentText)}
-                          onCancel={handleCancelEdit}
-                          userName={String(comment.userName)}
-                          userImage={comment.userImage}
-                          createdAt={multiFormatDateString(comment.createdAt)}
-                        />
-                      ) : (
-                        <div className="relative grid grid-cols-1 gap-4 border border-none rounded-lg bg-transparent w-full pb-4">
-                          <div className="relative flex gap-2">
-                            <div className='w-1/6 m-auto'>
-                              <img src={comment.userImage} className="w-post_details-card m-auto flex flex-col md:flex-row items-stretch md:items-start8 h-10 lg:w-12 lg:h-12 rounded-full" />
-                            </div>
-                            <div className="flex flex-col w-full h-full">
-                              <div className="flex flex-row justify-between h-1/2">
-                                <div className='flex-center gap-2'>
-                                  <p className="relative text-l text-white whitespace-nowrap truncate overflow-hidden">{comment.userName}</p>
-                                  <p className="text-white text-sm">{multiFormatDateString(comment.createdAt)} </p>
+          <div
+            className="p-4 md:p-5 space-y-4"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {loading || refreshing ? (
+              <Loader />
+            ) : (
+              <ul>
+                {comments.map((comment) => (
+                  <li key={comment.commentId} className="flex justify-center relative top-1/3 w-full border-white !mt-0">
+                    {editingCommentId === comment.commentId ? (
+                      <EditComment
+                        initialCommentText={comment.commentText}
+                        onSave={(updatedCommentText: string) => handleEditComment(comment.commentId, updatedCommentText)}
+                        onCancel={handleCancelEdit}
+                        userName={String(comment.userName)}
+                        userImage={comment.userImage}
+                        createdAt={multiFormatDateString(comment.createdAt)}
+                      />
+                    ) : (
+                      <div className="relative grid grid-cols-1 gap-4 border border-none rounded-lg bg-transparent w-full pb-4">
+                        <div className="relative flex gap-2">
+                          <div className='w-1/6 m-auto'>
+                            <img src={comment.userImage} className="w-post_details-card m-auto flex flex-col md:flex-row items-stretch md:items-start8 h-10 lg:w-12 lg:h-12 rounded-full" />
+                          </div>
+                          <div className="flex flex-col w-full h-full">
+                            <div className="flex flex-row justify-between h-1/2">
+                              <div className='flex-center gap-2'>
+                                <p className="relative text-l text-white whitespace-nowrap truncate overflow-hidden">{comment.userName}</p>
+                                <p className="text-white text-sm">{multiFormatDateString(comment.createdAt)} </p>
+                              </div>
+                              {user?.id === comment.userId && (
+                                <div className="flex flex-row gap-3">
+                                  <Button
+                                    onClick={() => handleEditButtonClickInternal(comment.commentId)}
+                                    variant="ghost"
+                                    className="post_details-edit_btn p-0 hover:bg-transparent"
+                                  >
+                                    <img src={"/assets/icons/edit.svg"} alt="edit" width={18} height={18} />
+                                  </Button>
+                                  <Button
+                                    onClick={() => handleDeleteCommentInternal(comment.commentId)}
+                                    variant="ghost"
+                                    className="post_details-delete_btn hover:bg-transparent"
+                                  >
+                                    <img src={"/assets/icons/delete.svg"} alt="delete" width={20} height={20} />
+                                  </Button>
                                 </div>
-                                {user?.id === comment.userId && (
-                                  <div className="flex flex-row gap-3">
-                                    <Button
-                                      onClick={() => handleEditButtonClickInternal(comment.commentId)}
-                                      variant="ghost"
-                                      className="post_details-edit_btn p-0 hover:bg-transparent"
-                                    >
-                                      <img src={"/assets/icons/edit.svg"} alt="edit" width={18} height={18} />
-                                    </Button>
-                                    <Button
-                                      onClick={() => handleDeleteCommentInternal(comment.commentId)}
-                                      variant="ghost"
-                                      className="post_details-delete_btn hover:bg-transparent"
-                                    >
-                                      <img src={"/assets/icons/delete.svg"} alt="delete" width={20} height={20} />
-                                    </Button>
-                                  </div>
-                                )}
-                              </div>
-                              <div className='h-full'>
-                                <p className="text-white text-l">{comment.commentText}</p>
-                              </div>
+                              )}
+                            </div>
+                            <div className='h-full'>
+                              <p className="text-white text-l">{comment.commentText}</p>
                             </div>
                           </div>
                         </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </PullToRefresh>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <CommentFormMobile
             onSubmit={(formData: { comment: string }) => handleNewComment(formData.comment)}
             className={commentFormClassName}
