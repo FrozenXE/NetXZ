@@ -19,8 +19,8 @@ const CommentFormMobile: React.FC<CommentFormMobileProps> = ({ onSubmit, onCance
 
   return (
     <form onSubmit={handleSubmit} className={className}>
-      <div className="mx-auto w-11/12 max-w-screen-sm px-4 pl-0 pb-5 pr-0 fixed bottom-20">
-        <div className="flex pt-10 text-left text-gray-700">
+      <div className="mx-auto w-11/12 max-w-screen-sm fixed bottom-20 !bg-zinc-800">
+        <div className="flex text-left text-gray-700">
           <div className="w-full space-y-3 text-gray-700">
             <div className="flex w-full flex-row justify-between">
               <textarea

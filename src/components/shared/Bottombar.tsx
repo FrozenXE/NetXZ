@@ -1,12 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-
 import { bottombarLinks } from "@/constants";
 
 const Bottombar = () => {
   const { pathname } = useLocation();
 
+  // Determine when to hide the bottom bar
+  const hideBottomBar = pathname.startsWith("/update-profile") || window.innerWidth >= 768; 
+  const hideBottomBar1 = pathname.startsWith("/create-post") || window.innerWidth >= 768; 
+
+  if (hideBottomBar || hideBottomBar1) {
+    return null; // Return null to hide the bottom bar
+  }
+
   return (
-    <section className="bottom-bar !bottom-0">
+    <section className="bottom-bar !fixed !bottom-0">
       {bottombarLinks.map((link) => {
         const isActive = pathname === link.route;
         return (
@@ -15,7 +22,8 @@ const Bottombar = () => {
             to={link.route}
             className={`${
               isActive && "rounded-[10px] bg-primary-500 "
-            } flex-center flex-col gap-1 p-2 transition`}>
+            } flex-center flex-col gap-1 p-2 transition`}
+          >
             <img
               src={link.imgURL}
               alt={link.label}
@@ -23,7 +31,6 @@ const Bottombar = () => {
               height={16}
               className={`${isActive && "invert-white"}`}
             />
-
             <p className="tiny-medium text-light-2">{link.label}</p>
           </Link>
         );
