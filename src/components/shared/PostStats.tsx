@@ -174,7 +174,7 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
       await createComment(commentText, postId);
   
       setShowCommentForm(false);
-    } catch (error: any) {
+    } catch (error: any) {  
       console.error('Error creating comment:', error.message);
       }
   };

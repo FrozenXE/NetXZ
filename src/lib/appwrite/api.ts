@@ -783,7 +783,7 @@ function generateUniqueId() {
 }
 
 // ============================= CREATE COMMENTS
-export async function createComment(commentText: string, postId: string): Promise<void> {
+export async function createComment(commentText: string, postId: string): Promise<CommentData> {
   try {
     const currentUser = await getCurrentUser();
 
@@ -795,12 +795,14 @@ export async function createComment(commentText: string, postId: string): Promis
 
     const commentId = generateUniqueId();
 
-    const commentData = {
+    const commentData: CommentData = {
       commentId,
       userId: currentUser.$id,
       commentText,
       createdAt: new Date().toISOString(),
       postId,
+      userName: undefined,
+      userImage: undefined
     };
 
     await databases.createDocument(
@@ -809,7 +811,9 @@ export async function createComment(commentText: string, postId: string): Promis
       commentId,
       commentData
     );
-    return; 
+
+    // Return the newly created comment data
+    return commentData;
   } catch (error) {
     throw error;
   }
@@ -827,15 +831,13 @@ export interface CommentData {
 }
 // ============================= GET COMMENT DATA
 
-export async function getCommentsData(): Promise<CommentData[]> {
+export async function getCommentsData(useCache: boolean = true): Promise<CommentData[]> {
   try {
-    // Check if comment data exists in the cache
-    if (commentDataCache.size > 0) {
+    if (useCache && commentDataCache.size > 0) {
       return Array.from(commentDataCache.values());
     }
 
     const { commentsCollectionId } = appwriteConfig;
-
     const response = await databases.listDocuments(
       appwriteConfig.databaseId,
       commentsCollectionId
@@ -845,17 +847,10 @@ export async function getCommentsData(): Promise<CommentData[]> {
 
     for (const document of response.documents) {
       try {
-        const {
-          $id,
-          userId,
-          postId,
-          commentText,
-          createdAt,
-        } = document;
+        const { $id, userId, postId, commentText, createdAt } = document;
 
         if ($id && userId && postId && commentText !== undefined && createdAt) {
           const userDetails = await getUserById(userId);
-
           const userName = userDetails?.name || 'Unknown';
           const userImage = userDetails?.imageUrl || '/assets/icons/profile-placeholder.svg';
 
@@ -870,10 +865,8 @@ export async function getCommentsData(): Promise<CommentData[]> {
           };
 
           commentsData.push(commentData);
-
-          // Store comment data in the cache
           commentDataCache.set($id, commentData);
-        } 
+        }
       } catch (error) {
         console.error("Error fetching comment:", error);
       }
@@ -885,7 +878,6 @@ export async function getCommentsData(): Promise<CommentData[]> {
     throw error;
   }
 }
-
 
 
 // ============================= DELETE COMMENT
@@ -902,7 +894,6 @@ export async function deleteComment(commentId: string): Promise<void> {
 }
 
 // ============================= EDIT COMMENT
-// api.ts
 
 export async function editComment(commentId: string, data: { commentText: string }): Promise<CommentData> {
   try {

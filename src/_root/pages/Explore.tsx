@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Input } from "@/components/ui";
 import useDebounce from "@/hooks/useDebounce";
 import { GridPostList, Loader } from "@/components/shared";
 import { useGetPosts, useSearchPosts } from "@/lib/react-query/queries";
+
+const useExplorePosts = () => {
+  const { data, fetchNextPage, hasNextPage, refetch } = useGetPosts();
+
+  return {
+    posts: data,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+  };
+};
 
 export type SearchResultProps = {
   isSearchFetching: boolean;
@@ -24,29 +36,25 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) =
 };
 
 const Explore = () => {
-  const { ref, inView } = useInView();
-  const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
+  const { inView } = useInView();
+  const { posts, fetchNextPage, hasNextPage, refetch } = useExplorePosts();
 
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearch = useDebounce(searchValue, 500);
   const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedSearch);
 
   useEffect(() => {
-    if (inView && !searchValue) {
+    if (inView && !searchValue && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, searchValue]);
+  }, [inView, searchValue, hasNextPage]);
 
-  if (!posts)
-    return (
-      <div className="flex-center w-full h-full">
-        <Loader />
-      </div>
-    );
+  const handleRefresh = () => {
+    refetch();
+  };
 
   const shouldShowSearchResults = searchValue !== "";
-  const shouldShowPosts = !shouldShowSearchResults && 
-    posts.pages.every((item) => item.documents.length === 0);
+  const shouldShowPosts = !shouldShowSearchResults && posts && posts.pages.every((item) => item.documents.length === 0);
 
   return (
     <div className="explore-container">
@@ -86,26 +94,36 @@ const Explore = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-9 w-full max-w-5xl">
-        {shouldShowSearchResults ? (
-          <SearchResults
-            isSearchFetching={isSearchFetching}
-            searchedPosts={searchedPosts}
-          />
-        ) : shouldShowPosts ? (
-          <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
-        ) : (
-          posts.pages.map((item, index) => (
-            <GridPostList key={`page-${index}`} posts={item.documents} />
-          ))
-        )}
-      </div>
-
-      {hasNextPage && !searchValue && (
-        <div ref={ref} className="mt-10">
-          <Loader />
+      <InfiniteScroll
+        dataLength={posts ? posts.pages.reduce((acc, curr) => acc + curr.documents.length, 0) : 0}
+        next={fetchNextPage}
+        hasMore={!!hasNextPage} // Ensure hasMore is boolean
+        loader={<Loader />}
+        refreshFunction={handleRefresh}
+        pullDownToRefresh
+        pullDownToRefreshThreshold={80} // Adjust as needed
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+        }
+      >
+        <div className="flex flex-wrap gap-9 w-full max-w-5xl">
+          {shouldShowSearchResults ? (
+            <SearchResults
+              isSearchFetching={isSearchFetching}
+              searchedPosts={searchedPosts}
+            />
+          ) : shouldShowPosts ? (
+            <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
+          ) : (
+            posts && posts.pages.map((item, index) => (
+              <GridPostList key={`page-${index}`} posts={item.documents} />
+            ))
+          )}
         </div>
-      )}
+      </InfiniteScroll>
     </div>
   );
 };
