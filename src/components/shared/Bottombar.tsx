@@ -4,12 +4,11 @@ import { bottombarLinks } from "@/constants";
 const Bottombar = () => {
   const { pathname } = useLocation();
 
-  // Determine when to hide the bottom bar
   const hideBottomBar = pathname.startsWith("/update-profile") || window.innerWidth >= 768; 
   const hideBottomBar1 = pathname.startsWith("/create-post") || window.innerWidth >= 768; 
 
   if (hideBottomBar || hideBottomBar1) {
-    return null; // Return null to hide the bottom bar
+    return null; 
   }
 
   return (

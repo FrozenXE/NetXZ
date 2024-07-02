@@ -5,6 +5,8 @@ import { multiFormatDateString } from "@/lib/utils";
 import { CommentData, getCommentsData, createComment, deleteComment } from '@/lib/appwrite/api';
 import CommentFormMobile from "../forms/CommentFormMobile";
 import { Loader } from "@/components/shared";
+import PullToRefresh from 'react-pull-to-refresh';
+import { disableBodyScroll, enableBodyScroll } from "@/lib/bodyscroll";
 
 type PopupCommentProps = {
   onClose: () => void;
@@ -63,6 +65,7 @@ const PopupComment: React.FC<PopupCommentProps> = ({
       setComments(prevComments => prevComments.filter(comment => comment.commentId !== commentId));
     } catch (error) {
       console.error("Error deleting comment:", error);
+      
     }
   };
 
@@ -73,38 +76,20 @@ const PopupComment: React.FC<PopupCommentProps> = ({
   const handleEditButtonClickInternal = (commentId: string) => {
     handleEditButtonClick(commentId);
   };
+  useEffect(() => {
+    disableBodyScroll();
 
-  // Custom pull-to-refresh implementation
-  const [dragging, setDragging] = useState(false);
-  const [dragY, setDragY] = useState(0);
-  const [originalY, setOriginalY] = useState(0);
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setOriginalY(e.touches[0].clientY);
-    setDragging(true);
+    return () => {
+      enableBodyScroll();
+    };
+  }, []);
+  const handleRefresh1 = async () => {
+    console.log("Starting refresh...");
+    setRefreshing(true);
+    await fetchComments(false); 
+    setRefreshing(false);
+    console.log("Refresh complete.");
   };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!dragging) return;
-
-    const dragDistance = e.touches[0].clientY - originalY;
-    setDragY(dragDistance);
-  };
-
-  const handleTouchEnd = () => {
-    if (dragY >= 300) {
-      setRefreshing(true);
-      fetchComments(false)
-        .then(() => setRefreshing(false))
-        .catch((error) => {
-          console.error("Error refreshing comments:", error);
-          setRefreshing(false);
-        });
-    }
-    setDragging(false);
-    setDragY(0);
-  };
-
   return (
     <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="bg-zinc-800 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
       <div className="relative h-full w-full max-w-2xl max-h-full ">
@@ -124,10 +109,8 @@ const PopupComment: React.FC<PopupCommentProps> = ({
           </div>
           <div
             className="p-4 md:p-5 space-y-4"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
           >
+            <PullToRefresh onRefresh={handleRefresh1}>
             {loading || refreshing ? (
               <Loader />
             ) : (
@@ -185,15 +168,17 @@ const PopupComment: React.FC<PopupCommentProps> = ({
                 ))}
               </ul>
             )}
+          </PullToRefresh>
           </div>
           <CommentFormMobile
             onSubmit={(formData: { comment: string }) => handleNewComment(formData.comment)}
             className={commentFormClassName}
             onCancel={() => {}}
-          />
+            />
         </div>
       </div>
     </div>
+    
   );
 };
 

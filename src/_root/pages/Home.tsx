@@ -1,7 +1,7 @@
 import { Models } from "appwrite";
 import { Loader, PostCard, UserCard } from "@/components/shared";
 import { useGetRecentPosts, useGetUsers } from "@/lib/react-query/queries";
-import PullToRefresh from "react-pull-to-refresh";
+import PullToRefresh from 'react-simple-pull-to-refresh';
 import { useState } from "react";
 
 const Home = () => {
@@ -41,9 +41,8 @@ const Home = () => {
   return (
     <div className="flex flex-1 h-full">
       <div className="home-container flex-1 overflow-auto">
-        <PullToRefresh onRefresh={handleRefresh} className="w-full overflow-auto">
             <h2 className="h3-bold md:h2-bold text-left pl-2 w-full">Home Feed</h2>
-        </PullToRefresh>
+        <PullToRefresh onRefresh={handleRefresh} className="w-full overflow-auto">
           <div className="home-posts">
             {isPostLoading || refreshing ? (
               <Loader />
@@ -57,6 +56,7 @@ const Home = () => {
               </ul>
             )}
           </div>
+            </PullToRefresh>
       </div>
 
       <div className="home-creators w-1/4 overflow-auto">
