@@ -13,13 +13,13 @@ const CommentFormMobile: React.FC<CommentFormMobileProps> = ({ onSubmit, onCance
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({ comment });
-    setComment(''); // Clear the textarea after submission
-    onCancel(); // Close the form after submitting
+    setComment('');
+    onCancel();
   };
 
   return (
     <form onSubmit={handleSubmit} className={className}>
-      <div className="mx-auto w-11/12 max-w-screen-sm fixed bottom-20 !bg-zinc-800">
+      <div className="mx-auto w-full px-2 max-w-screen-sm fixed bottom-0 !bg-zinc-800">
         <div className="flex text-left text-gray-700">
           <div className="w-full space-y-3 text-gray-700">
             <div className="flex w-full flex-row justify-between">
@@ -29,7 +29,7 @@ const CommentFormMobile: React.FC<CommentFormMobileProps> = ({ onSubmit, onCance
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 style={{ resize: 'none' }}
-                className="h-10 !bg-zinc-800 text-left w-10/12 min-w-3/4 max-w-3/4 overflow-hidden whitespace-pre-wrap rounded-md border border-none bg-transparent p-5 text-sm font-normal normal-case text-white opacity-100 outline-none"
+                className="h-13 !bg-zinc-800 text-left w-10/12 min-w-3/4 max-w-3/4 overflow-hidden whitespace-pre-wrap rounded-md border border-none bg-transparent p-5 text-sm font-normal normal-case text-white opacity-100 outline-none"
               ></textarea>
               <button
                 type="submit"

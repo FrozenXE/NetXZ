@@ -39,10 +39,10 @@ const Home = () => {
   }
 
   return (
+      <PullToRefresh onRefresh={handleRefresh} className="w-full overflow-y-auto">
     <div className="flex flex-1 h-full">
       <div className="home-container flex-1 overflow-auto">
             <h2 className="h3-bold md:h2-bold text-left pl-2 w-full">Home Feed</h2>
-        <PullToRefresh onRefresh={handleRefresh} className="w-full overflow-auto">
           <div className="home-posts">
             {isPostLoading || refreshing ? (
               <Loader />
@@ -56,7 +56,6 @@ const Home = () => {
               </ul>
             )}
           </div>
-            </PullToRefresh>
       </div>
 
       <div className="home-creators w-1/4 overflow-auto">
@@ -74,6 +73,7 @@ const Home = () => {
         )}
       </div>
     </div>
+        </PullToRefresh>
   );
 };
 

@@ -12,7 +12,7 @@ const Bottombar = () => {
   }
 
   return (
-    <section className="bottom-bar !fixed !bottom-0">
+    <section className="bottom-bar !fixed bottom-0">
       {bottombarLinks.map((link) => {
         const isActive = pathname === link.route;
         return (

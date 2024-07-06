@@ -812,7 +812,6 @@ export async function createComment(commentText: string, postId: string): Promis
       commentData
     );
 
-    // Return the newly created comment data
     return commentData;
   } catch (error) {
     throw error;

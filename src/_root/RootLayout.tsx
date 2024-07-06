@@ -20,11 +20,11 @@ const RootLayout = () => {
       <Topbar />
       <LeftSidebar />
 
+      <Bottombar />
       <section className="flex flex-1 h-ful">
         <Outlet />
       </section>
 
-      <Bottombar />
     </div>
     </>
   );

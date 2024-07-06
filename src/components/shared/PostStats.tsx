@@ -92,15 +92,17 @@ const PostStats: React.FC<PostStatsProps> = ({ post, userId }) => {
     setShowPopupComment(true); 
     try {
       setLoadingComments(true);
-      const data = await getCommentsData();
-      setCommentsData(data);
+      const data = await getCommentsData(false); // Fetch fresh data
+      const postComments = data.filter(comment => comment.postId === post.$id);
+      const sortedComments = postComments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      setCommentsData(sortedComments);
     } catch (error) {
       console.error("Error fetching comments:", error);
-
     } finally {
       setLoadingComments(false); 
     }
   };
+  
 
   const handleEditComment = async (commentId: string, updatedCommentText: string) => {
     try {
