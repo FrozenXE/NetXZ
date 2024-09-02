@@ -37,7 +37,7 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) =
 
 const Explore = () => {
   const { inView } = useInView();
-  const { posts, fetchNextPage, hasNextPage, refetch } = useExplorePosts();
+  const { posts, fetchNextPage, hasNextPage } = useExplorePosts();
 
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearch = useDebounce(searchValue, 500);
@@ -49,9 +49,7 @@ const Explore = () => {
     }
   }, [inView, searchValue, hasNextPage]);
 
-  const handleRefresh = () => {
-    refetch();
-  };
+
 
   const shouldShowSearchResults = searchValue !== "";
   const shouldShowPosts = !shouldShowSearchResults && posts && posts.pages.every((item) => item.documents.length === 0);
@@ -99,15 +97,7 @@ const Explore = () => {
         next={fetchNextPage}
         hasMore={!!hasNextPage} // Ensure hasMore is boolean
         loader={<Loader />}
-        refreshFunction={handleRefresh}
-        pullDownToRefresh
-        pullDownToRefreshThreshold={80} // Adjust as needed
-        pullDownToRefreshContent={
-          <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-        }
-        releaseToRefreshContent={
-          <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-        }
+        className="!overflow-y-hidden"
       >
         <div className="flex flex-wrap gap-9 w-full max-w-5xl">
           {shouldShowSearchResults ? (

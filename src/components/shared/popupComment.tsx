@@ -7,7 +7,6 @@ import CommentFormMobile from "../forms/CommentFormMobile";
 import { Loader } from "@/components/shared";
 import { disableBodyScroll, enableBodyScroll } from "@/lib/bodyscroll";
 import { toast } from "react-toastify";
-import ReactPullToRefresh from "../ui/PullToRefresh";
 
 type PopupCommentProps = {
   onClose: () => void;
@@ -36,7 +35,7 @@ const PopupComment: React.FC<PopupCommentProps> = ({
   postId,
   commentFormClassName
 }) => {
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing] = useState(false);
   const [comments, setComments] = useState<CommentData[]>(initialComments);
 
   const fetchComments = async (_useCache: boolean = true) => {
@@ -86,11 +85,6 @@ const PopupComment: React.FC<PopupCommentProps> = ({
     };
   }, []);
   
-  const handleRefresh1 = async () => {
-    setRefreshing(true);
-    await fetchComments(false); 
-    setRefreshing(false);
-  };
 
   return (
     <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="bg-zinc-800 pb-10 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
@@ -102,15 +96,15 @@ const PopupComment: React.FC<PopupCommentProps> = ({
               type="button"
               className="text-white bg-transparent hover:bg-gray-200 hover:text-white rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={onClose}
-            >
+              >
               <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
               </svg>
               <span className="sr-only">Close modal</span>
             </button>
           </div>
+          <h2></h2>
           <div className="p-4 md:p-5 space-y-4">
-      <ReactPullToRefresh onRefresh={handleRefresh1}>
               {loading || refreshing ? (
                 <Loader />
               ) : (
@@ -168,7 +162,6 @@ const PopupComment: React.FC<PopupCommentProps> = ({
                   ))}
                 </ul>
               )}
-          </ReactPullToRefresh>
           </div>
           <CommentFormMobile
             onSubmit={(formData: { comment: string }) => handleNewComment(formData.comment)}
