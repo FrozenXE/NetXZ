@@ -25,14 +25,6 @@ const App = () => {
   return (
     <main className="flex h-screen">
       <Routes>
-        {/* public routes */}
-        <Route element={<AuthLayout />}>
-          <Route path="/sign-in" element={<SigninForm />} />
-          <Route path="/sign-up" element={<SignupForm />} />
-          <Route path="/reset-password" element={<ResetPassword/>}/>
-          <Route path="/create-password" element={<CreatePassword/>}/>
-          <Route path="/verify" element={<Verify/>}/>
-        </Route>
 
         {/* private routes */}
         <Route element={<RootLayout />}>
@@ -46,6 +38,16 @@ const App = () => {
           <Route path="/profile/:id/*" element={<Profile />} />
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
         </Route>
+        
+        {/* public routes */}
+        <Route element={<AuthLayout />}>
+          <Route path="/sign-in" element={<SigninForm />} />
+          <Route path="/sign-up" element={<SignupForm />} />
+          <Route path="/reset-password" element={<ResetPassword/>}/>
+          <Route path="/create-password" element={<CreatePassword/>}/>
+          <Route path="/verify" element={<Verify/>}/>
+        </Route>
+
       </Routes>
 
     </main>

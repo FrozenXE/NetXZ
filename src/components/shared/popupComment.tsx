@@ -87,18 +87,15 @@ const PopupComment: React.FC<PopupCommentProps> = ({
   }, []);
   
   const handleRefresh1 = async () => {
-    console.log("Starting refresh...");
     setRefreshing(true);
     await fetchComments(false); 
     setRefreshing(false);
-    console.log("Refresh complete.");
   };
 
   return (
     <div id="static-modal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true" className="bg-zinc-800 pb-10 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen">
       <div className="relative h-full w-full max-w-2xl max-h-full overflow-y-auto">
         <div className="relative bg-zinc-800 rounded-lg shadow h-screen">
-      <ReactPullToRefresh onRefresh={handleRefresh1}>
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-xl font-semibold text-white dark:text-white">Comments</h3>
             <button
@@ -113,6 +110,7 @@ const PopupComment: React.FC<PopupCommentProps> = ({
             </button>
           </div>
           <div className="p-4 md:p-5 space-y-4">
+      <ReactPullToRefresh onRefresh={handleRefresh1}>
               {loading || refreshing ? (
                 <Loader />
               ) : (
@@ -170,13 +168,13 @@ const PopupComment: React.FC<PopupCommentProps> = ({
                   ))}
                 </ul>
               )}
+          </ReactPullToRefresh>
           </div>
           <CommentFormMobile
             onSubmit={(formData: { comment: string }) => handleNewComment(formData.comment)}
             className={commentFormClassName}
             onCancel={() => {}}
             />
-            </ReactPullToRefresh>
         </div>
       </div>
     </div>
