@@ -35,7 +35,8 @@ const SigninForm = () => {
       return;
     }
     const isLoggedIn = await checkAuthUser();
-    if (isLoggedIn) {
+    const { isAuthenticated } = useUserContext();
+    if (isLoggedIn && isAuthenticated) {
       form.reset();
       navigate("/sign-in");
     } else {
