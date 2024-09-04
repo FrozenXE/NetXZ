@@ -18,7 +18,7 @@ const LeftSidebar = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    signOut();
+    await signOut();
     setIsAuthenticated(false);
     setUser(INITIAL_USER);
     navigate("/sign-in");

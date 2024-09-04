@@ -500,9 +500,11 @@ export async function getRecentPosts() {
 // ============================================================
 
 // ============================== GET USERS
+// Adjust the getUsers function to ensure it handles limits properly
 export async function getUsers(limit?: number) {
   const queries: any[] = [Query.orderDesc("$createdAt")];
 
+  // Add limit only if specified
   if (limit) {
     queries.push(Query.limit(limit));
   }
@@ -514,11 +516,11 @@ export async function getUsers(limit?: number) {
       queries
     );
 
-    if (!users) throw Error;
-
+    if (!users) throw new Error('No users found');
     return users;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
@@ -839,7 +841,10 @@ export async function getCommentsData(useCache: boolean = true): Promise<Comment
     const { commentsCollectionId } = appwriteConfig;
     const response = await databases.listDocuments(
       appwriteConfig.databaseId,
-      commentsCollectionId
+      commentsCollectionId,
+      [
+        Query.limit(100)
+      ]
     );
 
     const commentsData: CommentData[] = [];
@@ -870,7 +875,7 @@ export async function getCommentsData(useCache: boolean = true): Promise<Comment
         console.error("Error fetching comment:", error);
       }
     }
-
+    console.log(commentsData)
     return commentsData;
   } catch (error) {
     console.error("Error fetching comments data:", error);

@@ -95,7 +95,7 @@ const Explore = () => {
       <InfiniteScroll
         dataLength={posts ? posts.pages.reduce((acc, curr) => acc + curr.documents.length, 0) : 0}
         next={fetchNextPage}
-        hasMore={!!hasNextPage} // Ensure hasMore is boolean
+        hasMore={!!hasNextPage}
         loader={<Loader />}
         className="!overflow-y-hidden"
       >

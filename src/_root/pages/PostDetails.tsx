@@ -37,7 +37,6 @@ const PostDetails = () => {
         setIsCommentsLoading(false);
       }
     };
-
     fetchComments();
   }, [id]);
 
