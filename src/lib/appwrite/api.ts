@@ -875,7 +875,6 @@ export async function getCommentsData(useCache: boolean = true): Promise<Comment
         console.error("Error fetching comment:", error);
       }
     }
-    console.log(commentsData)
     return commentsData;
   } catch (error) {
     console.error("Error fetching comments data:", error);

@@ -3,7 +3,6 @@ import { useUserContext } from '@/context/AuthContext';
 
 export default function AuthLayout() {
   const { isAuthenticated } = useUserContext();
-  console.log(isAuthenticated)
   return (
     <>
       <img
