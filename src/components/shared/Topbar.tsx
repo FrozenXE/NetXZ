@@ -29,8 +29,8 @@ const Topbar = () => {
         </div>
           <Link to="/" className="flex gap-3 justify-center items-center w-1/3">
             <img 
-              src="/assets/icons/Logo-text.svg" 
-              alt="logo-text"
+              src="/assets/images/logo.png" 
+              alt="logo"
               width={95}
               height={40}
               />

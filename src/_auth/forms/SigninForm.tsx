@@ -51,16 +51,10 @@ const SigninForm = () => {
       <div className="sm:w-420 flex-center flex-col">
         <div className="w-full flex justify-center gap-5">
           <img 
-            src="/assets/images/logo.svg" 
+            src="/assets/images/logo.png" 
             alt="logo"  
-            width={120}
-            height={40}/>
-          <img 
-            src="/assets/icons/Logo-text.svg" 
-            alt="logo-text"
-            width={150}
-            height={40}
-            />
+            width={175}
+            height={20}/>
           </div>
         <h2 className="h3-bold md:h2-bold pt-2 sm:pt-5">
           Log in to your account
