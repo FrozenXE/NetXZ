@@ -16,7 +16,7 @@ const RootLayout = () => {
             height={40}
             />
       </>
-    <div className="w-full md:flex">
+    <div className="w-full md:flex h-screen">
       <Topbar />
       <LeftSidebar />
 

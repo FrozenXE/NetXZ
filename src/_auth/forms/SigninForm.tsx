@@ -16,7 +16,6 @@ import { z } from 'zod';
 const SigninForm = () => {
   const navigate = useNavigate();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
-
   const { mutateAsync: signInAccount, isLoading } = useSignInAccount();
 
   const form = useForm<z.infer<typeof SigninValidation>>({
@@ -29,20 +28,16 @@ const SigninForm = () => {
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
     const session = await signInAccount(user);
-
     if (!session) {
       toast.error("Login failed. Please double check your email or password.");
       return;
     }
     const isLoggedIn = await checkAuthUser();
-    const { isAuthenticated } = useUserContext();
-    if (isLoggedIn && isAuthenticated) {
+    if (isLoggedIn) {
       form.reset();
       navigate("/sign-in");
     } else {
       toast.error("Login failed. Please try again.");
-      
-      return;
     }
   };
 
@@ -54,8 +49,9 @@ const SigninForm = () => {
             src="/assets/images/logo.png" 
             alt="logo"  
             width={175}
-            height={20}/>
-          </div>
+            height={20}
+          />
+        </div>
         <h2 className="h3-bold md:h2-bold pt-2 sm:pt-5">
           Log in to your account
         </h2>
@@ -64,7 +60,8 @@ const SigninForm = () => {
         </p>
         <form
           onSubmit={form.handleSubmit(handleSignin)}
-          className="flex flex-col gap-5 w-full mt-4">
+          className="flex flex-col gap-5 w-full mt-4"
+        >
           <FormField
             control={form.control}
             name="email"
@@ -72,7 +69,11 @@ const SigninForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Email</FormLabel>
                 <FormControl>
-                  <Input type="text" className="py-3 px-4 block w-full border-2 border-gray-600 bg-transparent h-30 rounded-md text-sm focus:gray-400 focus:gray-400 shadow-sm" {...field} />
+                  <Input
+                    type="text"
+                    className="py-3 px-4 block w-full border-2 border-gray-600 focus:border-cola bg-transparent rounded-md text-sm shadow-sm"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -86,7 +87,11 @@ const SigninForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" className="py-3 px-4 block w-full border-2 border-gray-600 bg-transparent h-30 rounded-md text-sm focus:gray-400 focus:gray-400 shadow-sm" {...field} />
+                  <Input
+                    type="password"
+                    className="py-3 px-4 block w-full border-2 border-gray-600 focus:border-cola bg-transparent rounded-md text-sm shadow-sm"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -94,18 +99,21 @@ const SigninForm = () => {
           />
           <div>
             <Link to="/reset-password" className="text-right pr flex justify-end pb-2">
-              <span className="text-md text-gray-400 decoration-2 hover:underline hover:text-blue-600 dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer">
+              <span className="text-md text-gray-300  hover:underline hover:decoration-cola dark:text-gray-500 dark:hover:text-gray-200 cursor-pointer">
                 Reset Password
               </span>
             </Link>
-            <Button type="submit" className="rounded-md border  border-transparent font-semibold bg-slate-800 hover:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-all text-md dark:focus:ring-offset-gray-800 text-gray-300 w-full">
+            <Button
+              type="submit"
+              className="rounded-md border border-transparent bg-ha hover:bg-primary-500 font-semibold transition-all text-md w-full"
+            >
               {isLoading || isUserLoading ? (
                 <div className="flex-center gap-2">
-                  <Loader /> Loading...
+                  <Loader />
                 </div>
               ) : (
                 "Log in"
-                )}
+              )}
             </Button>
           </div>
 
@@ -113,24 +121,25 @@ const SigninForm = () => {
             Don&apos;t have an account?
             <Link
               to="/sign-up"
-              className="text-primary-500 text-small-semibold ml-1">
+              className="text-ha hover:underline hover:decoration-primary-500 hover:text-primary-500 text-small-semibold ml-1"
+            >
               Sign up
             </Link>
           </p>
         </form>
       </div>
       <ToastContainer
-          position="bottom-right"
-          autoClose={4000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover />
+        position="bottom-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </Form>
-    
   );
 };
 

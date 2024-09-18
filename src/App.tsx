@@ -22,7 +22,7 @@ import Verify from "./components/shared/Verify";
 
 const App = () => {
   return (
-    <main className="flex h-screen">
+    <main className="flex h-screen ">
       <Routes>
 
         {/* private routes */}

@@ -16,10 +16,10 @@ export default function AuthLayout() {
         <Navigate to="/" />
       ) : (
         <>
-          <section className="flex flex-1 justify-center items-center flex-col py-10 pt-0 bg-test">
+          <section className="flex flex-1 justify-center items-center flex-col py-10 pt-0 bg-be">
             <Outlet />
           </section>
-
+        
           <img
             src="/assets/images/bg.jpg"
             alt="logo"

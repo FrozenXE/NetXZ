@@ -76,7 +76,7 @@ const SignupForm = () => {
 
   return (
     <Form {...form}>
-      <div className="sm:w-420 flex-center flex-col h-fit pt-5">
+      <div className="sm:w-420 flex-center flex-col h-full ">
         <div className="flex justify-center gap-5">
           <img 
             src="/assets/images/logo.png" 
@@ -151,10 +151,10 @@ const SignupForm = () => {
             )}
           />
 
-          <Button type="submit" className="shad-button_primary">
+          <Button type="submit" className="shad-button_primary !bg-ha">
             {isCreatingAccount || isSigningInUser || isUserLoading ? (
               <div className="flex-center gap-2">
-                <Loader /> Loading...
+                <Loader /> 
               </div>
             ) : (
               "Sign Up"
@@ -165,7 +165,7 @@ const SignupForm = () => {
             Already have an account?
             <Link
               to="/sign-in"
-              className="text-primary-500 text-small-semibold ml-1">
+              className="text-gray-300 hover:underline hover:decoration-ha text-small-semibold ml-1">
               Log in
             </Link>
           </p>

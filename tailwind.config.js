@@ -39,7 +39,11 @@ module.exports = {
         'white1': 'D7D7D7',
         'back': '#151723',
         'errorr': '#B00020',
-        'test':'rgb(9 9 10 / var(--tw-bg-opacity))'
+        'test':'rgb(9 9 10 / var(--tw-bg-opacity))',
+        'be': '#1e2028',
+        'cola': 'rgba(167, 139, 250)',
+        'ha': 'rgba(167, 139, 250, 1)',
+        'ta': '#171717',
       },
       screens: {
         'xs': '480px',

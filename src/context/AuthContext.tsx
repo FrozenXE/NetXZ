@@ -20,6 +20,7 @@ interface IContextType {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   checkAuthUser: () => Promise<boolean>;
   logout: () => void;
+  isInitialized: boolean;
 }
 
 const AuthContext = createContext<IContextType>({
@@ -30,6 +31,7 @@ const AuthContext = createContext<IContextType>({
   setIsAuthenticated: () => {},
   checkAuthUser: async () => false,
   logout: () => {},
+  isInitialized: false,
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -72,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsInitialized(true);
     }
   };
-
+  
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -82,14 +84,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error(error);
       } finally {
         setIsLoading(false);
-        setIsInitialized(true);
+        setIsInitialized(true); // Mark initialization complete
       }
     };
-
-    if (!isAuthenticated) {
-      initializeAuth();
+  
+    if (!isInitialized) {
+      initializeAuth(); // Run only once
     }
-  }, [isAuthenticated]);
+  }, []); // Remove `isAuthenticated` from the dependency array, only run on mount
+  
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -124,9 +127,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const logout = () => {
     setIsAuthenticated(false);
     setUser(INITIAL_USER);
-    navigate("/sign-in");
+    localStorage.removeItem("cookieFallback");
+  
+    // Ensure state updates are reflected before navigating
+    setTimeout(() => {
+      navigate("/sign-in");
+    }, 0); // Allow one event loop tick to process state changes
   };
-
+  
   const value = {
     user,
     setUser,
@@ -135,6 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsAuthenticated,
     checkAuthUser,
     logout,
+    isInitialized
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
