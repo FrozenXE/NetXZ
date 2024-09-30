@@ -64,32 +64,39 @@ const Profile = () => {
   const unfollowUserMutation = useUnfollowUser();
 
   const handleFollow = async () => {
+    if (!id) return;
+  
+    setFollowersCount((prevCount) => prevCount + 1);
+    setIsFollowing(true);
+  
     try {
-      if (id) {
-        setFollowersCount((prevCount) => prevCount + 1);
-        await followUserMutation.mutateAsync(id);
-        setIsFollowing(true);
-        isFollowingQuery.refetch();
-      }
+      await followUserMutation.mutateAsync(id);
+      isFollowingQuery.refetch();
     } catch (error) {
       console.error("Error following user:", error);
       setFollowersCount((prevCount) => prevCount - 1);
+      setIsFollowing(false);
     }
   };
   
   const handleUnfollow = async () => {
+    if (!id) return;
+  
+    // Optimistically update the state
+    setFollowersCount((prevCount) => prevCount - 1);
+    setIsFollowing(false);
+  
     try {
-      if (id) {
-        setFollowersCount((prevCount) => prevCount - 1);
-        await unfollowUserMutation.mutateAsync(id);
-        setIsFollowing(false);
-        isFollowingQuery.refetch();
-      }
+      await unfollowUserMutation.mutateAsync(id);
+      isFollowingQuery.refetch();
     } catch (error) {
       console.error("Error unfollowing user:", error);
-        setFollowersCount((prevCount) => prevCount + 1);
+      // Revert the state if the request fails
+      setFollowersCount((prevCount) => prevCount + 1);
+      setIsFollowing(true);
     }
   };
+
 
   if (!currentUser || isLoading) { // Check both currentUser and isLoading
     return (

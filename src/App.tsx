@@ -16,7 +16,7 @@ import SignupForm from "@/_auth/forms/SignupForm";
 import SigninForm from "@/_auth/forms/SigninForm";
 
 import "./globals.css";
-import ResetPassword from "./components/forms/ResetPassword";
+import ResetPassword from "./_auth/ResetPassword";
 import CreatePassword from "./components/forms/CreatePassword";
 import Verify from "./components/shared/Verify";
 

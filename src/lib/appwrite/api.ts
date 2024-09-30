@@ -478,6 +478,28 @@ export async function getUserPosts(userId?: string) {
   }
 }
 
+export async function getCommentsDataByPost(postId: string, limit: number = 10, offset: number = 0): Promise<CommentData[]> {
+  const response = await databases.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.commentsCollectionId,
+    [
+      Query.equal("postId", postId),
+      Query.limit(limit),
+      Query.offset(offset),
+      Query.orderDesc("$createdAt")
+    ]
+  );
+  return response.documents.map(document => ({
+    commentId: document.$id,
+    userId: document.userId,
+    postId: document.postId,
+    commentText: document.commentText,
+    createdAt: document.createdAt,
+    userName: '', // Placeholder, should be fetched from user data
+    userImage: '' // Placeholder, should be fetched from user data
+  }));
+}
+
 // ============================== GET POPULAR POSTS (BY HIGHEST LIKE COUNT)
 export async function getRecentPosts() {
   try {
@@ -526,31 +548,18 @@ export async function getUsers(limit?: number) {
 
 // ============================== GET USER BY ID
 export async function getUserById(userId: string) {
-  try {
-    // Check if user data exists in the cache
-    if (userCache.has(userId)) {
-      return userCache.get(userId);
-    }
-
-    // If user data is not in the cache, fetch it from the server
-    const user = await databases.getDocument(
-      appwriteConfig.databaseId,
-      appwriteConfig.userCollectionId,
-      userId
-    );
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    // Store user data in the cache
-    userCache.set(userId, user);
-
-    return user;
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    throw error;
+  if (userCache.has(userId)) {
+    return userCache.get(userId);
   }
+  const user = await databases.getDocument(
+    appwriteConfig.databaseId,
+    appwriteConfig.userCollectionId,
+    userId
+  );
+  if (user) {
+    userCache.set(userId, user);
+  }
+  return user;
 }
 
 
