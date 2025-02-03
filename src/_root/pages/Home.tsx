@@ -15,7 +15,7 @@ const Home = () => {
     data: creators,
     isLoading: isUserLoading,
     isError: isErrorCreators,
-  } = useGetUsers(10);
+  } = useGetUsers();
 
   const [refreshing, setRefreshing] = useState(false);
 
