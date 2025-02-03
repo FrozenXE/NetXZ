@@ -19,6 +19,10 @@ module.exports = {
       },
     },
     extend: {
+      backgroundImage:{
+        'customgradient': 'linear-gradient(to right, #FF83CD, #8BBAE9)',
+        'custom-gradient-hover': 'linear-gradient(to right, #E372B5, #78A2D6)',
+      },
       colors: {
         'purpl': '#887cfc',
         'primary-500': '#877EFF',
@@ -44,6 +48,7 @@ module.exports = {
         'cola': 'rgba(167, 139, 250)',
         'ha': 'rgba(167, 139, 250, 1)',
         'ta': '#171717',
+        'dad':'#640D14',
       },
       screens: {
         'xs': '480px',

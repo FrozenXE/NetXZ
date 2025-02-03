@@ -24,6 +24,7 @@ export type SearchResultProps = {
 };
 
 const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) => {
+  console.log(searchedPosts);
   if (isSearchFetching) {
     return <Loader />;
   } else if (searchedPosts && searchedPosts.documents.length > 0) {
@@ -40,7 +41,7 @@ const Explore = () => {
   const { posts, fetchNextPage, hasNextPage } = useExplorePosts();
 
   const [searchValue, setSearchValue] = useState("");
-  const debouncedSearch = useDebounce(searchValue, 500);
+  const debouncedSearch = useDebounce(searchValue, 1000);
   const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedSearch);
 
   useEffect(() => {
@@ -48,8 +49,6 @@ const Explore = () => {
       fetchNextPage();
     }
   }, [inView, searchValue, hasNextPage]);
-
-
 
   const shouldShowSearchResults = searchValue !== "";
   const shouldShowPosts = !shouldShowSearchResults && posts && posts.pages.every((item) => item.documents.length === 0);

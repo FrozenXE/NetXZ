@@ -302,7 +302,7 @@ export async function searchPosts(searchTerm: string) {
 }
 
 export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
-  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+  const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(10)];
 
   if (pageParam) {
     queries.push(Query.cursorAfter(pageParam.toString()));
@@ -523,13 +523,12 @@ export async function getRecentPosts() {
 
 // ============================== GET USERS
 // Adjust the getUsers function to ensure it handles limits properly
-export async function getUsers(limit?: number) {
+export async function getUsers() {
   const queries: any[] = [Query.orderDesc("$createdAt")];
 
-  // Add limit only if specified
-  if (limit) {
-    queries.push(Query.limit(limit));
-  }
+  // if (limit) {
+  //   queries.push(Query.limit(limit));
+  // }
 
   try {
     const users = await databases.listDocuments(
