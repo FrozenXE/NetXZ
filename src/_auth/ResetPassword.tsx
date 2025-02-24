@@ -18,7 +18,7 @@ const ResetPassword = () => {
     if (userEmail && userEmail.includes('@')) {
       await account.createRecovery(
         userEmail,
-        "https://netxz.cfd/create-password"
+        "https://netxz.netlify.app/create-password"
       );
 
       toast.success(`Email has been sent!`);
