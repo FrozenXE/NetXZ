@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'netxz.cfd',
+  appId: 'netxz.xyz',
   appName: 'netxz-mobile',
   webDir: 'dist',
   server:{

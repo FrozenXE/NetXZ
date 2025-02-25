@@ -1,4 +1,4 @@
-package netxz.cfd;
+package netxz.xyz;
 
 import com.getcapacitor.BridgeActivity;
 
